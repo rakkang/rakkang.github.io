@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Ruikye</title>
+  <subtitle>Life is short, I&#39;m coding...</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://ruikye.com/"/>
+  <updated>2016-10-15T14:57:17.000Z</updated>
+  <id>http://ruikye.com/</id>
+  
+  <author>
+    <name>Ruikye</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Github Pages 域名绑定</title>
+    <link href="http://ruikye.com/2016/10/13/github-domain-bind/"/>
+    <id>http://ruikye.com/2016/10/13/github-domain-bind/</id>
+    <published>2016-10-13T14:50:22.000Z</published>
+    <updated>2016-10-15T14:57:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Github 的 Pages 功能不但提供了用户免费搭建博客的功能，同时还提供了自定义的域名绑定；在 Github 上搭建了博客后，Github 会自动给每个网址分配一个二级域名，如：rakkang.github.io，二级域名的问题是太长，也不太容易记住。所以很多用户都会自己申请独立域名并与 Github 的博客绑定起来。</p>
+<h2 id="域名注册"><a href="#域名注册" class="headerlink" title="域名注册"></a>域名注册</h2><p>要绑定独立的域名，首先得注册自己域名，域名一般是收费的；如果网站服务器是在国内的话，域名还需要通过工信部的备案才能使用。推荐使用 <a href="http://dnspod.cn" target="_blank" rel="external">DNSPod</a> 注册域名，因为解析是免费的。</p>
+<a id="more"></a>
+<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>在 DNSPod 上注册好域名之后，要通过设置绑定到指定的服务器在正常访问。如图：</p>
+<p><img src="/img/dnspod.png" alt="DNSPod 域名设置"></p>
+<p>Github 提供了两种域名绑定的方式：</p>
+<blockquote>
+<p>NS 记录是 DNSPod 默认的绑定，不用管</p>
+</blockquote>
+<ul>
+<li><p><code>A</code> 记录类型<br><code>A</code> 记录绑定是服务器IP地址，一般是如果是顶级域名，如：<code>www.xxx.com</code> 等，绑定全站使用这种类型</p>
+</li>
+<li><p><code>CNAME</code> 记录类型<br><code>CNAME</code> 记录类型绑定是一个域名，一般如果使用的是其他服务器的二级域名时使用</p>
+</li>
+</ul>
+<blockquote>
+<p>主机记录类型，默认是<code>@</code>，那么访问只能通过 domain.com 访问；<br>如果是<code>wwww</code>类，那么就可以通过 www.domain.com 访问了</p>
+</blockquote>
+<p>因为 Github 本身提供了一个可访问的二级域名，所以采用 <code>CNAME</code> 记录更方便些。</p>
+<p>在 DNSPod 设置好绑定的服务器后，要是 Github 帮你解析，还需要在项目的根目录新建一个<code>CNAME</code>的文件：</p>
+<p><img src="/img/github_blog.png" alt="Github Pages CNAME 文件"></p>
+<p>文件内容很简单，比如申请的域名是：domain.com, 那么填写：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">domain</span><span class="selector-class">.com</span></div></pre></td></tr></table></figure></p>
+<p>设置好之后，打开项目的 <code>Settings</code>, 在 <code>GitHub Pages</code> 一栏出现下面的内容说明绑定成功了：</p>
+<p><img src="/img/github_domain.png" alt=""></p>
+<blockquote>
+<p>在 DNSPod 设置之后，由于DNS缓存的原因，域名解析生效需要一段时间，一般10几分钟就行了。如果在 Github 绑定域名后，出现 404 错误可能是缓存的原因，多试几次或者过一会儿再刷新</p>
+</blockquote>
+<p>如果要测试域名是否解析成功以及具体的解析地址，可以在终端执行<code>dig</code>命令查看：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ dig ruikye.com +nostats +nocomments +nocmd</div></pre></td></tr></table></figure></p>
+<p>命令的结果：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ dig ruikye.com +nostats +nocomments +nocmd</div><div class="line"></div><div class="line">; &lt;&lt;&gt;&gt; DiG 9.8.3-P1 &lt;&lt;&gt;&gt; ruikye.com +nostats +nocomments +nocmd</div><div class="line">;; global options: +cmd</div><div class="line">;ruikye.com.                 IN  A</div><div class="line">ruikye.com.             600  IN  CNAME   rakkang.github.com.</div><div class="line">rakkang.github.com.     30   IN  CNAME   github.map.fastly.net.</div><div class="line">github.map.fastly.net.  1    IN  A       103.245.222.133</div></pre></td></tr></table></figure></p>
+<p>如果结果和在 DNSPod 设置的一致，说明解析以生效了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Github 的 Pages 功能不但提供了用户免费搭建博客的功能，同时还提供了自定义的域名绑定；在 Github 上搭建了博客后，Github 会自动给每个网址分配一个二级域名，如：rakkang.github.io，二级域名的问题是太长，也不太容易记住。所以很多用户都会自己申请独立域名并与 Github 的博客绑定起来。&lt;/p&gt;
+&lt;h2 id=&quot;域名注册&quot;&gt;&lt;a href=&quot;#域名注册&quot; class=&quot;headerlink&quot; title=&quot;域名注册&quot;&gt;&lt;/a&gt;域名注册&lt;/h2&gt;&lt;p&gt;要绑定独立的域名，首先得注册自己域名，域名一般是收费的；如果网站服务器是在国内的话，域名还需要通过工信部的备案才能使用。推荐使用 &lt;a href=&quot;http://dnspod.cn&quot;&gt;DNSPod&lt;/a&gt; 注册域名，因为解析是免费的。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Github" scheme="http://ruikye.com/categories/Github/"/>
+    
+    
+      <category term="Github" scheme="http://ruikye.com/tags/Github/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>基于 Python 的命令行 2048</title>
+    <link href="http://ruikye.com/2015/04/10/2048-algorithm/"/>
+    <id>http://ruikye.com/2015/04/10/2048-algorithm/</id>
+    <published>2015-04-10T06:04:36.000Z</published>
+    <updated>2016-10-15T14:58:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>2048 是一个基于数字合并的消除类游戏，游戏规则比较简单，但是可玩性很强，操作简单、益智。趁着周末有时间，简单的分析了下 2048 的算法并用 Python 写了一个命令行的实现。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="基本规则"><a href="#基本规则" class="headerlink" title="基本规则"></a>基本规则</h3><ul>
+<li>规则描述：</li>
+</ul>
+<blockquote>
+<ol>
+<li>相邻两个相同的数字可以合并</li>
+<li>每次移动，每个数字最多合并一次</li>
+<li>所有格子填满且没有相邻数字可以合并时游戏结束</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>单行合并算法</p>
+<ul>
+<li><p>代码实现：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 数组向左合并</span></div><div class="line"><span class="comment"># 运行结果：[4, 2, 0, 0]</span></div><div class="line"></div><div class="line">a = [<span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>]</div><div class="line">i, t, MAX = <span class="number">1</span>, <span class="number">0</span>, len(a) - <span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">while</span> t &lt;= MAX:</div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> a[t]: </div><div class="line">        a[t], a[i], i = a[i], <span class="number">0</span>, min(i + <span class="number">1</span>, MAX)</div><div class="line">    <span class="keyword">elif</span> a[i] == a[t]: </div><div class="line">        <span class="keyword">if</span> i！= t:</div><div class="line">            a[i], a[t]， t = <span class="number">0</span>, <span class="number">2</span> * a[i], t + <span class="number">1</span></div><div class="line">        i = min(i + <span class="number">1</span>, MAX)</div><div class="line">    <span class="keyword">elif</span> a[i] != a[t] <span class="keyword">and</span> a[i]: </div><div class="line">        t = t + <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>: </div><div class="line">        i = min(i + <span class="number">1</span>, MAX)</div><div class="line"></div><div class="line">    i = min(max(t + <span class="number">1</span>, i), MAX)</div><div class="line">    <span class="keyword">if</span> i == MAX <span class="keyword">and</span> <span class="keyword">not</span> a[i]: <span class="keyword">break</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>算法分析：<br>  <strong>t</strong>：  表示等待合并的位置<br>  <strong>i</strong>：  扫描的索引</p>
+<ol>
+<li>如果 <strong>t</strong> 位置为空，则交换 <strong>i</strong> 和 <strong>t</strong> 的值，并且 <strong>i</strong> 位移加 1</li>
+<li>如果 <strong>i</strong> 和 <strong>t</strong> 对应的值相等且有 <strong>t</strong> != <strong>i</strong>, 则合并 <strong>i</strong> 和 <strong>t</strong> 的值，同时 <strong>t</strong> 和 <strong>i</strong> 位移加 1</li>
+<li>如果 <strong>i</strong> 和 <strong>t</strong> 对应值不相等且 <strong>i</strong> 对应值不为空，则 <strong>t</strong> 的位移加 1</li>
+<li>如果 <strong>i</strong> 到达末尾且对应的值不为空，则等待 <strong>t</strong> 到达队尾</li>
+<li>如果 <strong>i</strong> 到达队尾且对应值为空，则表示本次扫描结束<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">运算过程：</div><div class="line">[<span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>] i-&gt;<span class="number">1</span>, t-&gt;<span class="number">0</span></div><div class="line">[<span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>] i-&gt;<span class="number">2</span>, t-&gt;<span class="number">0</span></div><div class="line">[<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>] i-&gt;<span class="number">3</span>, t-&gt;<span class="number">1</span></div><div class="line">[<span class="number">4</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>] i-&gt;<span class="number">3</span>, t-&gt;<span class="number">1</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h3><ul>
+<li><p>运行截图：</p>
+<p>  <img src="/img/2048.png" alt="命令行 2048"></p>
+</li>
+<li><p>操控：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">OPTIONS_KEY = &#123;</div><div class="line">            <span class="string">'w'</span>: <span class="number">2</span>,             <span class="comment"># up</span></div><div class="line">    <span class="string">'a'</span>: <span class="number">1</span>,         <span class="string">'d'</span>: <span class="number">3</span>,     <span class="comment"># left, right</span></div><div class="line">            <span class="string">'s'</span>: <span class="number">4</span>,             <span class="comment"># down</span></div><div class="line">            <span class="string">'k'</span>: <span class="number">2</span>,             <span class="comment"># up</span></div><div class="line">    <span class="string">'h'</span>: <span class="number">1</span>,         <span class="string">'l'</span>: <span class="number">3</span>,     <span class="comment"># left, right</span></div><div class="line">            <span class="string">'j'</span>: <span class="number">4</span>              <span class="comment"># down</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>实现代码：</p>
+<ul>
+<li><p>获取键盘按下事件（getch.py）:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Getch</span>:</span></div><div class="line">    <span class="string">"""Gets a single character from standard input.  Does not echo to the screen."""</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">try</span>: self.impl = _GetchWindows()</div><div class="line">        <span class="keyword">except</span> ImportError:  self.impl = _GetchUnix()</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.impl()</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_GetchUnix</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">import</span> tty, sys</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">import</span> sys, tty, termios</div><div class="line">        fd = sys.stdin.fileno()</div><div class="line">        old_settings = termios.tcgetattr(fd)</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            tty.setraw(sys.stdin.fileno(), termios.TCSANOW)</div><div class="line">            ch = sys.stdin.read(<span class="number">1</span>)</div><div class="line">            sys.stdout.write(ch)</div><div class="line">        <span class="keyword">finally</span>: termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)</div><div class="line">        <span class="keyword">return</span> ch</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">_GetchWindows</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span> <span class="keyword">import</span> msvcrt</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">import</span> msvcrt</div><div class="line">        <span class="keyword">return</span> msvcrt.getch()</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    getch = Getch()</div><div class="line">    <span class="keyword">print</span> <span class="string">"Getch TEST：Enter 'q' exit!"</span>,</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">print</span> <span class="string">'\nYour input: '</span>,</div><div class="line">        ch = getch()</div><div class="line">        <span class="keyword">if</span> ch == <span class="string">'q'</span>: <span class="keyword">break</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>2048 游戏代码（2048.py）:</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> random</div><div class="line"></div><div class="line">SPLITE_LINE = <span class="string">' - - - - - - - - - - - - - - - - -'</span></div><div class="line">OVER_TIPS   = <span class="string">' &gt;&gt; GAME OVER &lt;&lt; Enter (R)eplay,(Q)uit: '</span></div><div class="line">INPUT_TIPS  = <span class="string">' Enter (W)Up,(S)Down,(A)Left,(D)Right: '</span></div><div class="line">OPTIONS_KEY = &#123;</div><div class="line">            <span class="string">'w'</span>: <span class="number">2</span>,</div><div class="line">    <span class="string">'a'</span>: <span class="number">1</span>,         <span class="string">'d'</span>: <span class="number">3</span>,</div><div class="line">            <span class="string">'s'</span>: <span class="number">4</span>,</div><div class="line"></div><div class="line">            <span class="string">'k'</span>: <span class="number">2</span>,</div><div class="line">    <span class="string">'h'</span>: <span class="number">1</span>,         <span class="string">'l'</span>: <span class="number">3</span>,</div><div class="line">            <span class="string">'j'</span>: <span class="number">4</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">MAX_SIZE  = <span class="number">4</span></div><div class="line">GAME_GRID = [</div><div class="line">    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</div><div class="line">    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</div><div class="line">    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</div><div class="line">    [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</div><div class="line">]</div><div class="line"></div><div class="line">GRID_BOARD = [</div><div class="line">    [<span class="number">0x3</span>, <span class="number">0x7</span>, <span class="number">0xa</span>, <span class="number">0xf</span>],     <span class="comment"># right</span></div><div class="line">    [<span class="number">0xc</span>, <span class="number">0xd</span>, <span class="number">0xe</span>, <span class="number">0xf</span>],     <span class="comment"># down</span></div><div class="line">    [<span class="number">0x0</span>, <span class="number">0x4</span>, <span class="number">0x8</span>, <span class="number">0xc</span>],     <span class="comment"># left</span></div><div class="line">    [<span class="number">0x0</span>, <span class="number">0x1</span>, <span class="number">0x2</span>, <span class="number">0x3</span>]      <span class="comment"># up</span></div><div class="line">]</div><div class="line"></div><div class="line">GENERATED_LOC = [<span class="number">-1</span>, <span class="number">-1</span>]</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_grid</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'\033[0G'</span>, SPLITE_LINE</div><div class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> xrange(MAX_SIZE):</div><div class="line">        <span class="keyword">print</span> <span class="string">' |'</span>,</div><div class="line">        <span class="keyword">for</span> column <span class="keyword">in</span> xrange(MAX_SIZE):</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> GAME_GRID[row][column]: </div><div class="line">                <span class="keyword">print</span> <span class="string">'\033[1;37;42m'</span>, <span class="string">'     '</span>, <span class="string">'\033[0m'</span>,</div><div class="line">            <span class="keyword">elif</span> [row, column] == GENERATED_LOC: </div><div class="line">                <span class="keyword">print</span> <span class="string">'\033[1;37;45m'</span>, <span class="string">'\033'</span> + <span class="string">'%5d'</span> % (GAME_GRID[row][column]), <span class="string">'\033[0m'</span>,</div><div class="line">            <span class="keyword">else</span>: </div><div class="line">                <span class="keyword">print</span> <span class="string">'\033[1;37;44m'</span>, <span class="string">'\033'</span> + <span class="string">'%5d'</span> % (GAME_GRID[row][column]), <span class="string">'\033[0m'</span>,</div><div class="line">        <span class="keyword">print</span> <span class="string">'|\n %s'</span> % SPLITE_LINE</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">init</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(MAX_SIZE ** <span class="number">2</span>):  GAME_GRID[i / <span class="number">4</span>][i % <span class="number">4</span>] = <span class="number">0</span></div><div class="line">    b, n = [x + <span class="number">1</span> <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>)], random.choice([x + <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">3</span>)])</div><div class="line">    v, l = random.sample([<span class="number">2</span> ** x <span class="keyword">for</span> x <span class="keyword">in</span> b] * <span class="number">2</span>, n), \</div><div class="line">           random.sample([x <span class="keyword">for</span> x <span class="keyword">in</span> range(MAX_SIZE ** <span class="number">2</span>)], n)</div><div class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> xrange(n): GAME_GRID[l[x] / <span class="number">4</span>][l[x] % <span class="number">4</span>] = v[x]</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">move</span><span class="params">(ori)</span>:</span></div><div class="line">    merged = <span class="keyword">False</span></div><div class="line">    <span class="keyword">if</span> ori &lt;= <span class="number">2</span>: d = <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>: d = <span class="number">-1</span></div><div class="line">    <span class="keyword">for</span> col <span class="keyword">in</span> xrange(MAX_SIZE):</div><div class="line">        <span class="keyword">if</span> d &gt; <span class="number">0</span>: i, t, MAX, = <span class="number">1</span>, <span class="number">0</span>, MAX_SIZE - <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>: i, t, MAX, = <span class="number">-2</span>, <span class="number">-1</span>, - MAX_SIZE</div><div class="line">        <span class="keyword">while</span> d * t &lt;= d * MAX:</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">not</span> GAME_GRID[t][col] <span class="keyword">and</span> <span class="keyword">not</span> ori % <span class="number">2</span>) <span class="keyword">or</span> \</div><div class="line">               (<span class="keyword">not</span> GAME_GRID[col][t] <span class="keyword">and</span> ori % <span class="number">2</span>):</div><div class="line">                <span class="keyword">if</span> <span class="keyword">not</span> ori % <span class="number">2</span>:</div><div class="line">                    GAME_GRID[t][col], GAME_GRID[i][col], merged = GAME_GRID[</div><div class="line">                        i][col], <span class="number">0</span>, (merged <span class="keyword">or</span> GAME_GRID[i][col] != <span class="number">0</span>)</div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    GAME_GRID[col][t], GAME_GRID[col][i], merged = GAME_GRID[</div><div class="line">                        col][i], <span class="number">0</span>, (merged <span class="keyword">or</span> GAME_GRID[col][i] != <span class="number">0</span>)</div><div class="line">                i = d * min(d * (i + d), d * MAX)</div><div class="line">            <span class="keyword">elif</span> ((GAME_GRID[i][col] == GAME_GRID[t][col] <span class="keyword">and</span> <span class="keyword">not</span> ori % <span class="number">2</span>) <span class="keyword">or</span></div><div class="line">                  (GAME_GRID[col][i] == GAME_GRID[col][t] <span class="keyword">and</span> ori % <span class="number">2</span>)):</div><div class="line">                <span class="keyword">if</span> i != t:</div><div class="line">                    <span class="keyword">if</span> <span class="keyword">not</span> ori % <span class="number">2</span>: GAME_GRID[i][col], GAME_GRID[t][col] = <span class="number">0</span>, <span class="number">2</span> * GAME_GRID[i][col]</div><div class="line">                    <span class="keyword">else</span>: GAME_GRID[col][i], GAME_GRID[col][t] = <span class="number">0</span>, <span class="number">2</span> * GAME_GRID[col][i]</div><div class="line">                    t = t + <span class="number">1</span></div><div class="line">                i, merged = d * min(d * (i + d), d * MAX), i != t <span class="keyword">or</span> merged</div><div class="line">            <span class="keyword">elif</span> (GAME_GRID[i][col] != GAME_GRID[t][col] <span class="keyword">and</span> </div><div class="line">                  GAME_GRID[i][col] <span class="keyword">and</span> <span class="keyword">not</span> ori % <span class="number">2</span>) <span class="keyword">or</span> \</div><div class="line">                 (GAME_GRID[col][i] != GAME_GRID[col][t] <span class="keyword">and</span> </div><div class="line">                  GAME_GRID[col][i] <span class="keyword">and</span> ori % <span class="number">2</span>): t = t + d</div><div class="line">            <span class="keyword">else</span>: i = d * min(d * (i + d), d * MAX)</div><div class="line">            i = d * min(max(d * (t + d), d * i), d * MAX)</div><div class="line">            <span class="keyword">if</span> i == MAX <span class="keyword">and</span> ((<span class="keyword">not</span> GAME_GRID[i][col] <span class="keyword">and</span> <span class="keyword">not</span> ori % <span class="number">2</span>) <span class="keyword">or</span></div><div class="line">                             (<span class="keyword">not</span> GAME_GRID[col][i] <span class="keyword">and</span> ori % <span class="number">2</span>)):</div><div class="line">                <span class="keyword">break</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> merged</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_game_over</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(MAX_SIZE):</div><div class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(MAX_SIZE):</div><div class="line">            <span class="keyword">if</span> <span class="keyword">not</span> GAME_GRID[i][j] <span class="keyword">or</span> (<span class="number">3</span> - j <span class="keyword">and</span> GAME_GRID[i][j] == GAME_GRID[i][j + <span class="number">1</span>]) <span class="keyword">or</span> \</div><div class="line">                (<span class="number">3</span> - i <span class="keyword">and</span> GAME_GRID[i][j] == GAME_GRID[i + <span class="number">1</span>][j]): <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_new</span><span class="params">(ori)</span>:</span></div><div class="line">    bounds = GRID_BOARD[ori]</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> bounds:</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> GAME_GRID[i / <span class="number">4</span>][i % <span class="number">4</span>]:</div><div class="line">            GAME_GRID[i / <span class="number">4</span>][i % <span class="number">4</span>] = random.choice([<span class="number">2</span>, <span class="number">4</span>, <span class="number">8</span>])</div><div class="line">            GENERATED_LOC[<span class="number">0</span>] = i / <span class="number">4</span></div><div class="line">            GENERATED_LOC[<span class="number">1</span>] = i % <span class="number">4</span></div><div class="line">            <span class="keyword">break</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    <span class="keyword">import</span> getch</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">clear_screen</span><span class="params">()</span>:</span></div><div class="line">        <span class="keyword">print</span> <span class="string">'\033[2k\033[1A'</span> * <span class="number">9</span>,</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">ready</span><span class="params">()</span>:</span></div><div class="line">        init()</div><div class="line">        print_grid()</div><div class="line">        <span class="keyword">print</span> INPUT_TIPS,</div><div class="line"></div><div class="line">    game_over = <span class="keyword">False</span></div><div class="line">    get_input = getch.Getch()</div><div class="line">    INPUT_TIPS_LEN = len(INPUT_TIPS)</div><div class="line">    GAME_OVER_TIPS_LEN = len(OVER_TIPS)</div><div class="line">    tips_len = INPUT_TIPS_LEN</div><div class="line"></div><div class="line">    ready()</div><div class="line"></div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        GENERATED_LOC = [<span class="number">-1</span>, <span class="number">-1</span>]</div><div class="line">        key = get_input()</div><div class="line"></div><div class="line">        <span class="keyword">if</span> key == <span class="string">'q'</span>: exit(<span class="number">0</span>)</div><div class="line">        <span class="keyword">elif</span> key <span class="keyword">in</span> OPTIONS_KEY <span class="keyword">and</span> <span class="keyword">not</span> game_over:</div><div class="line">            ori = OPTIONS_KEY[key]</div><div class="line">            <span class="keyword">if</span> move(ori):</div><div class="line">                generate_new(ori - <span class="number">1</span>)</div><div class="line">                game_over = is_game_over()</div><div class="line">        <span class="keyword">elif</span> key == <span class="string">'r'</span> <span class="keyword">and</span> game_over:</div><div class="line">            game_over = <span class="keyword">False</span></div><div class="line">            init()</div><div class="line"></div><div class="line">        clear_screen()</div><div class="line">        print_grid()</div><div class="line"></div><div class="line">        <span class="keyword">if</span> game_over: <span class="keyword">print</span> OVER_TIPS,</div><div class="line">        <span class="keyword">else</span>: <span class="keyword">print</span> INPUT_TIPS,</div></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;2048 是一个基于数字合并的消除类游戏，游戏规则比较简单，但是可玩性很强，操作简单、益智。趁着周末有时间，简单的分析了下 2048 的算法并用 Python 写了一个命令行的实现。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="Python" scheme="http://ruikye.com/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://ruikye.com/tags/Python/"/>
+    
+      <category term="Algorithm" scheme="http://ruikye.com/tags/Algorithm/"/>
+    
+      <category term="2048" scheme="http://ruikye.com/tags/2048/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mac 常用软件</title>
+    <link href="http://ruikye.com/2015/04/07/mac-software-recommand/"/>
+    <id>http://ruikye.com/2015/04/07/mac-software-recommand/</id>
+    <published>2015-04-07T09:54:04.000Z</published>
+    <updated>2016-10-15T14:57:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="快速启动神器-Alfred"><a href="#快速启动神器-Alfred" class="headerlink" title="快速启动神器 Alfred"></a>快速启动神器 <a href="http://www.ifunmac.com/2015/02/alfred-2-6/" target="_blank" rel="external">Alfred</a></h3><blockquote>
+<p>OSX 自带了 Spotlight 工具，在 Mac 下搜索本地文件、软件非常的方便，很多事情不用鼠标，按几下键盘就可以高效的完成。Alfred 可以说是 Mac 上最佳的 Spotlight 替代软件，不仅覆盖了 Spotlight 的全部功能，最大的特点是支持自定义Workflow。</p>
+</blockquote>
+<p><img src="/img/alfred_0.png" alt="alfred2"></p>
+<a id="more"></a>
+<p>相关链接:</p>
+<ul>
+<li><a href="http://www.zhihu.com/question/20656680" target="_blank" rel="external">知乎上的Alfred</a></li>
+<li><a href="https://github.com/hzlzh/Alfred-Workflows" target="_blank" rel="external">Github 上的 Workflow</a></li>
+</ul>
+<h3 id="翻墙利器-ShadowsocksX"><a href="#翻墙利器-ShadowsocksX" class="headerlink" title="翻墙利器 ShadowsocksX"></a>翻墙利器 <a href="https://github.com/shadowsocks/shadowsocks" target="_blank" rel="external">ShadowsocksX</a></h3><blockquote>
+<p>Mac上得翻墙利器，支持域名智能代理。ShadowsocksX 提供了一个公共的服务器，同时也可以自己在国外搭建代理，非常方便</p>
+</blockquote>
+<h3 id="状态栏图标管理-Bartender"><a href="#状态栏图标管理-Bartender" class="headerlink" title="状态栏图标管理 Bartender"></a>状态栏图标管理 <a href="http://www.macbartender.com" target="_blank" rel="external">Bartender</a></h3><blockquote>
+<p>Bartender 是一款Mac上的菜单栏图标管理工具，能够还你一个干净的Mac菜单栏，它能够创建一个二级菜单，可以把不需要显示在菜单栏上的图标放到二级菜单中或者直接隐藏。</p>
+</blockquote>
+<ul>
+<li>使用 Bartender 前的状态栏：</li>
+</ul>
+<p><img src="/img/bartender_0.png" alt="bartender0"></p>
+<ul>
+<li>使用 Bartener 之后：</li>
+</ul>
+<p><img src="/img/bartender_1.png" alt="bartender0"></p>
+<h3 id="菜单栏日历工具-Fantastical"><a href="#菜单栏日历工具-Fantastical" class="headerlink" title="菜单栏日历工具 Fantastical"></a>菜单栏日历工具 <a href="http://www.ifunmac.com/2015/03/fantastical-2/" target="_blank" rel="external">Fantastical</a></h3><blockquote>
+<p>Mac 菜单自带的时间显示太简陋了，只能查看时间。Fantastical 是一个菜单的日历工具，在菜单栏上显示一个带日期的图标，点击之后可以像 Windows 一样可以查看日历、待办事项等，同时 Fantastical 可以同步 Exechange 服务。</p>
+</blockquote>
+<ul>
+<li>使用截图：</li>
+</ul>
+<p><img src="/img/caltool.png" alt="Fantastical"></p>
+<h3 id="开发文档神器-Dash"><a href="#开发文档神器-Dash" class="headerlink" title="开发文档神器 Dash"></a>开发文档神器 <a href="https://kapeli.com/dash" target="_blank" rel="external">Dash</a></h3><blockquote>
+<p>Dash 是一款 Mac 上的API文档管理和代码片段收藏工具，Dash内置了丰富的API文档，让我们集中管理API文档，包括下载、搜索、查阅，包括各种主流的编程语言和框架，如Cocos2D, Cocos3D, Corona, CSS, HTML, Java, Objective-C, JavaScript, jQuery, Kobold2D, Lua, 不需要我们再去到处下载 API 文档，Dash 已经自动集成了，最新的2.2版本支持OS X Yosemite，Swift、iOS 8等，并支持集成到XCode、Alfred等软件中，非常的强大，Mac 上的开发者必备的 API 文档管理工具。</p>
+</blockquote>
+<ul>
+<li>使用截图：</li>
+</ul>
+<p><img src="/img/Dash.png" alt="Dash"></p>
+<h3 id="终端替代工具-iTerm2"><a href="#终端替代工具-iTerm2" class="headerlink" title="终端替代工具 iTerm2"></a>终端替代工具 <a href="http://iterm2.com" target="_blank" rel="external">iTerm2</a></h3><blockquote>
+<p>Mac 对原生 Shell 的支持是无数程序员喜爱 Mac 的理由之一，程序员用 Mac 而不用 Shell，基本等于自断一臂，威力将大打折扣。Shell 并非凭空而来，它的入口是终端工具。OS X自带的终端工具虽然不错，但是和 iTerm 2一比，就逊色很多了。</p>
+</blockquote>
+<ul>
+<li><p>一些基本功能如下：</p>
+<ol>
+<li>分窗口操作：shift+command+d（横向）command+d（竖向）</li>
+<li>查找和粘贴：command+f，呼出查找功能，tab 键选中找到的文本，option+enter 粘贴</li>
+<li>自动完成：command+; 根据上下文呼出自动完成窗口，上下键选择</li>
+<li>粘贴历史：shift+command+h5、回放功能：option+command+b</li>
+<li>全屏：command+enter</li>
+<li>光标去哪了？command+/</li>
+<li>Expose Tabs：Option+Command+E</li>
+</ol>
+</li>
+<li><p>使用截图：</p>
+</li>
+</ul>
+<p><img src="/img/iterm2.png" alt="iTerm2"></p>
+<h3 id="终极-Shell-oh-my-zsh"><a href="#终极-Shell-oh-my-zsh" class="headerlink" title="终极 Shell oh my zsh"></a>终极 Shell <a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="external">oh my zsh</a></h3><blockquote>
+<p>Mac 虽然自带了 Bash，但是功能太简陋了，只能算是阉割版的 Shell。Zsh 是类 Unix 系统通用的 Shell，功能强大到 ”令人发指“ 的地步，各种 Themes、Plugins 用之不尽，对 Git 项目有很好的支持</p>
+</blockquote>
+<ul>
+<li>使用截图：</li>
+</ul>
+<p><img src="/img/zsh.png" alt="oh-my-zsh"></p>
+<ul>
+<li>配置：<ul>
+<li>zsh 是有自己的环境变量配置文件，一般放在 ~/.zshrc</li>
+<li>安装完 zsh 后，会在 $HOME 的根目录生成 ..oh-my-zsh/ 目录，是 zsh 配置文件以及内置脚本的根目录</li>
+</ul>
+</li>
+</ul>
+<p>相关链接：</p>
+<ul>
+<li><a href="http://ohmyz.sh" target="_blank" rel="external">官网</a></li>
+<li><a href="http://zhuanlan.zhihu.com/mactalk/19556676" target="_blank" rel="external">知乎专栏</a></li>
+<li><a href="http://blog.chinaunix.net/uid-26495963-id-3193686.html" target="_blank" rel="external">Zsh 配置</a></li>
+</ul>
+<h3 id="包管理-Homebrew"><a href="#包管理-Homebrew" class="headerlink" title="包管理 Homebrew"></a>包管理 <a href="https://github.com/Homebrew/homebrew" target="_blank" rel="external">Homebrew</a></h3><blockquote>
+<p>Mac OS X是基于Unix的操作系统，可以安装大部分为Unix/Linux开发的软件。然而，如果只是以使用为目的，对每个软件都进行手工编译不是很方便，也不利于管理已安装的软件，于是出现了类似于Linux中APT、Yum等类似的软件包管理系统，其中最著名的有MacPorts、Fink、Homebrew等。与其他类似工具相比，Homebrew的原则优势是：它尽可能地利用系统自带的各种库，使得软件包的编译时间大为缩短；同时由于几乎不会造成冗余，软件包的管理也清晰、灵活了许多。Homebrew的另一个特点是使用Ruby定义软件包安装配置（叫做formula），定制非常简单</p>
+</blockquote>
+<ul>
+<li>使用截图：</li>
+</ul>
+<p><img src="/img/brew.png" alt="Homebrew"></p>
+<ul>
+<li><p>常用命令：</p>
+  <figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ brew search wget        <span class="comment"># 查找软件包</span></div><div class="line">$ brew install wget       <span class="comment"># 安装软件</span></div><div class="line">$ brew list               <span class="comment"># 列出已安装软件包</span></div><div class="line">$ brew remove wget        <span class="comment"># 删除软件包</span></div><div class="line">$ brew info wget          <span class="comment"># 查看已安装包信息</span></div><div class="line">$ brew deps wget          <span class="comment"># 列出软件包的依赖包</span></div><div class="line">$ brew update             <span class="comment"># 更新 homebrew</span></div><div class="line">$ brew outdated           <span class="comment"># 列出需要更新的软件包</span></div><div class="line">$ brew upgrade            <span class="comment"># 更新过时的软件包</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;快速启动神器-Alfred&quot;&gt;&lt;a href=&quot;#快速启动神器-Alfred&quot; class=&quot;headerlink&quot; title=&quot;快速启动神器 Alfred&quot;&gt;&lt;/a&gt;快速启动神器 &lt;a href=&quot;http://www.ifunmac.com/2015/02/alfred-2-6/&quot;&gt;Alfred&lt;/a&gt;&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;OSX 自带了 Spotlight 工具，在 Mac 下搜索本地文件、软件非常的方便，很多事情不用鼠标，按几下键盘就可以高效的完成。Alfred 可以说是 Mac 上最佳的 Spotlight 替代软件，不仅覆盖了 Spotlight 的全部功能，最大的特点是支持自定义Workflow。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;/img/alfred_0.png&quot; alt=&quot;alfred2&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Software" scheme="http://ruikye.com/categories/Software/"/>
+    
+    
+      <category term="Software" scheme="http://ruikye.com/tags/Software/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ADB 的 Python 扩展</title>
+    <link href="http://ruikye.com/2015/03/14/adb-logcat-with-color/"/>
+    <id>http://ruikye.com/2015/03/14/adb-logcat-with-color/</id>
+    <published>2015-03-14T08:51:29.000Z</published>
+    <updated>2016-10-15T14:58:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于一直在 Mac 上做 Android 开发，习惯在命令行下使用 adb 命令调试。在开发调试中经常碰到一些问题：</p>
+<ul>
+<li>多设备连接时，adb 使用很麻烦，每次都要查询设备id然后复制粘贴</li>
+<li>adb logcat 输出的 Tag 的不同级别不能按颜色区分</li>
+<li>adb logcat 按包名过滤</li>
+<li>adb 截屏并保存到指定路径</li>
+</ul>
+<p>经常被这些问题搞得很郁闷，所以决定用 Python 扩展下 adb 命令的功能：</p>
+<a id="more"></a>
+<ul>
+<li>多设备连接时，可以选择</li>
+<li>adb logcat 不同级别按颜色区分</li>
+<li>按包名过滤</li>
+<li>adb 截屏并保存到指定路径</li>
+</ul>
+<h3 id="多设备选择"><a href="#多设备选择" class="headerlink" title="多设备选择"></a>多设备选择</h3><ul>
+<li><p>实现方式：</p>
+<blockquote>
+<p>如果连接了多设备，先查询出所有可用设备并编号，然后列出带编号的设备。选择编号就可以连接<code>adb</code>到指定设备：</p>
+</blockquote>
+</li>
+<li><p>运行截图：</p>
+</li>
+</ul>
+<p><img src="/img/multi_adb.png" alt="multiple_devices_adb"></p>
+<ul>
+<li><p>实现脚本：</p>
+<ul>
+<li><p>多设备选择(<em>libadb.py</em>)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">import</span> sys</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">select_target_devices</span><span class="params">()</span>:</span></div><div class="line">    devices = os.popen(<span class="string">"adb devices -l | sed '1d' | sed '/./!d'"</span>).readlines()</div><div class="line"></div><div class="line">    <span class="comment"># If only one devices, don't select anything</span></div><div class="line">    <span class="keyword">if</span> len(devices) &gt; <span class="number">1</span>:</div><div class="line">        remodel = re.compile(<span class="string">"^(.*)device.*model:(.*)device.*$"</span>)</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">read_a_target</span><span class="params">(max)</span>:</span></div><div class="line">            <span class="keyword">print</span> <span class="string">'Target:'</span>,</div><div class="line"></div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                var = raw_input()</div><div class="line">            <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">                sys.stdout.flush()</div><div class="line">                exit(<span class="number">1</span>)</div><div class="line"></div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                var = int(var)</div><div class="line">                <span class="keyword">if</span> <span class="number">0</span> &lt;= var &lt;= max:</div><div class="line">                    <span class="keyword">return</span> var</div><div class="line">                <span class="keyword">return</span> read_a_target(max)</div><div class="line">            <span class="keyword">except</span> Exception, e:</div><div class="line">                <span class="keyword">return</span> read_a_target(max)</div><div class="line"></div><div class="line">        <span class="keyword">print</span> <span class="string">'Select the target device: '</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(devices)):</div><div class="line">            res = remodel.match(devices[i])</div><div class="line">            <span class="keyword">if</span> res:</div><div class="line">                id, model = res.groups()</div><div class="line">                <span class="keyword">print</span> <span class="string">'[%d]: %s -&gt; %s'</span> % (i, id.strip().upper(), model.strip())</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                tmparr = re.compile(<span class="string">"\\s+"</span>).split(devices[i])</div><div class="line">                <span class="keyword">print</span> <span class="string">'[%d]: %s -&gt; %s'</span> % (i, tmparr[<span class="number">0</span>].upper(), tmparr[<span class="number">1</span>])</div><div class="line"></div><div class="line">        target = read_a_target(len(devices) - <span class="number">1</span>)</div><div class="line">        res = remodel.match(devices[target])</div><div class="line">        <span class="keyword">if</span> res:</div><div class="line">            id, model = res.groups()</div><div class="line">            <span class="keyword">return</span> id.strip()</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            tmparr = re.compile(<span class="string">"\\s+"</span>).split(devices[target])</div><div class="line">            <span class="keyword">print</span> <span class="string">'The target is %s'</span> % tmparr[<span class="number">1</span>]</div><div class="line">            exit(<span class="number">0</span>)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>adk 脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> libadb       <span class="comment"># 导入自定义的 libadb.py</span></div><div class="line"></div><div class="line">args = sys.argv[<span class="number">1</span>:]</div><div class="line"></div><div class="line">dev = <span class="keyword">None</span></div><div class="line"></div><div class="line"><span class="comment"># If no special device and args not null</span></div><div class="line"><span class="keyword">if</span> (<span class="keyword">not</span> <span class="string">'-s'</span> <span class="keyword">in</span> args) <span class="keyword">and</span> len(args) <span class="keyword">and</span> (args[<span class="number">0</span>] != <span class="string">'devices'</span>):</div><div class="line">    dev = libadb.select_target_devices()</div><div class="line"></div><div class="line"><span class="keyword">if</span> dev:</div><div class="line">    dev = <span class="string">'-s %s'</span> % dev</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    dev = <span class="string">''</span></div><div class="line"></div><div class="line">os.system(<span class="string">'adb %s %s'</span> % (dev, <span class="string">' '</span>.join(args)))</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>一般为了方便使用，会更改执行权限并链接到用户的命令目录：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ chmod a+x adk.py</div><div class="line"></div><div class="line">$ ln <span class="_">-s</span> ~/python/adb/adk.py /usr/<span class="built_in">local</span>/bin/adk</div><div class="line"><span class="comment"># 之后就可以使用 adk 替换 adb 命令的使用了</span></div><div class="line">$ adk logcat   <span class="comment"># 相当于 adb logcat</span></div></pre></td></tr></table></figure>
+<h3 id="adb-logcat-带颜色输出"><a href="#adb-logcat-带颜色输出" class="headerlink" title="adb logcat 带颜色输出"></a>adb logcat 带颜色输出</h3><ul>
+<li>实现方式：</li>
+</ul>
+<blockquote>
+<p>之前在 <a href="http://stackoverflow.com" target="_blank" rel="external">StackOverflow</a> 上找到了一个实现：<a href="http://stackoverflow.com/questions/11204202/color-of-adb-logcat-in-ubuntu-command-line" target="_blank" rel="external">http://stackoverflow.com/questions/11204202/color-of-adb-logcat-in-ubuntu-command-line</a>, 但是实现的不太好，有几个问题：</p>
+</blockquote>
+<ul>
+<li>如果输出带时间的 log 彩色效果会失效</li>
+<li>不能持续的等待 adb logcat 的输出，经常会突然断开</li>
+<li><p>多设备连接的问题</p>
+<blockquote>
+<p>针对以上问题做了改进并去掉了log的格式化效果<br>级别颜色：<br>“V”:··········# 灰色<br>“I”:··········# 绿色<br>“D”:··········# 青色<br>“W”:··········# 黄色<br>“E”:··········# 红色</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>效果截图：</li>
+</ul>
+<p><img src="/img/color_adblog.png" alt="color_adblog"></p>
+<ul>
+<li>按包名过滤的使用：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$user@shell ~: adblog -s &lt;Tag1 ...&gt; -app [packages ...]</div></pre></td></tr></table></figure>
+<ul>
+<li>实现脚本(<em>adblog.py</em>)：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> libadb       <span class="comment"># 导入自定义的 libadb.py</span></div><div class="line"></div><div class="line">raw_args = sys.argv[<span class="number">1</span>:]</div><div class="line"></div><div class="line">dev = libadb.select_target_devices()</div><div class="line"></div><div class="line"><span class="keyword">if</span> dev:</div><div class="line">    dev = <span class="string">'-s %s'</span> % dev</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    dev = <span class="string">''</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_packages</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="string">'-app'</span> <span class="keyword">in</span> raw_args:</div><div class="line">        i = raw_args.index(<span class="string">'-app'</span>)</div><div class="line">        sub_arr = raw_args[i:]</div><div class="line">        out_args = <span class="keyword">None</span></div><div class="line">        <span class="keyword">for</span> arg <span class="keyword">in</span> sub_arr:</div><div class="line">            <span class="keyword">if</span> arg.startswith(<span class="string">'-'</span>):</div><div class="line">                <span class="keyword">if</span> arg == <span class="string">'-app'</span>:</div><div class="line">                    <span class="keyword">continue</span></div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    <span class="keyword">break</span></div><div class="line">            <span class="keyword">elif</span> <span class="keyword">not</span> <span class="string">':'</span> <span class="keyword">in</span> arg:</div><div class="line">                <span class="keyword">if</span> <span class="keyword">not</span> out_args:</div><div class="line">                    out_args = []</div><div class="line"></div><div class="line">                out_args.append(arg.replace(<span class="string">'*'</span>, <span class="string">''</span>))</div><div class="line"></div><div class="line">        raw_args.remove(<span class="string">'-app'</span>)</div><div class="line">        <span class="keyword">return</span> out_args</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">peek_special_package</span><span class="params">(package)</span>:</span></div><div class="line">    <span class="keyword">return</span> os.popen(<span class="string">"adb %s shell ps | grep -E '%s' | cut -c10-15 | xargs"</span></div><div class="line">                    % (dev, package)).readline().strip().split(<span class="string">' '</span>)</div><div class="line"></div><div class="line">packages = parse_packages()</div><div class="line"></div><div class="line"><span class="keyword">if</span> packages:</div><div class="line">    <span class="keyword">for</span> arg <span class="keyword">in</span> packages:</div><div class="line">        <span class="keyword">if</span> arg <span class="keyword">in</span> raw_args:</div><div class="line">            raw_args.remove(arg)</div><div class="line"></div><div class="line">    packages = peek_special_package(<span class="string">'|'</span>.join(packages))</div><div class="line"></div><div class="line"><span class="comment"># to pick up -d or -e</span></div><div class="line">adb_args = <span class="string">' '</span>.join(raw_args)</div><div class="line"></div><div class="line"><span class="keyword">if</span> adb_args.startswith(<span class="string">'--help'</span>):</div><div class="line">    os.system(<span class="string">'adb logcat --help'</span>)</div><div class="line">    <span class="keyword">print</span> <span class="string">'\033[01;32mFilter by package name:\033[0m                                        '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'[option]:                                                                        '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'  -app &lt;pacakges&gt;        fuzzy match the packge name, eg: "google" will match all'</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'                         google apps: com.google, com.android.google and so on.  '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'                                                                                 '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'User for zsh: if use "*" eg: adblog *:W, need add prefix "noglob"; Like bellow:  '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'                                                                                 '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'  $zsh@usr ~: noglob adblog *:W -app com.google com.anroid                       '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'                                                                                 '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'                                                                                 '</span></div><div class="line">    exit(<span class="number">0</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># if someone is piping in to us, use stdin as input.  if not, invoke adb logcat</span></div><div class="line"><span class="keyword">if</span> os.isatty(sys.stdin.fileno()):</div><div class="line">    <span class="keyword">print</span> <span class="string">"[exec]: adb %s logcat %s"</span> % (dev, adb_args)</div><div class="line">    input = os.popen(<span class="string">"adb %s logcat %s"</span> % (dev, adb_args))</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    input = sys.stdin</div><div class="line"></div><div class="line">COLORS = &#123;</div><div class="line">    <span class="string">"V"</span>: <span class="string">"\033[22;37m"</span>,         <span class="comment"># 灰色</span></div><div class="line">    <span class="string">"I"</span>: <span class="string">"\033[22;32m"</span>,         <span class="comment"># 绿色</span></div><div class="line">    <span class="string">"D"</span>: <span class="string">"\033[22;36m"</span>,         <span class="comment"># 青色</span></div><div class="line">    <span class="string">"W"</span>: <span class="string">"\033[22;33m"</span>,         <span class="comment"># 黄色</span></div><div class="line">    <span class="string">"E"</span>: <span class="string">"\033[22;31m"</span>,         <span class="comment"># 红色</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">retag = re.compile(<span class="string">"(.*)([A-Z])/([^\(]+)\(([^\)]+)\): (.*)$"</span>)</div><div class="line"></div><div class="line"><span class="keyword">if</span> adb_args.startswith(<span class="string">'-c'</span>):</div><div class="line">    exit(<span class="number">0</span>)</div><div class="line"></div><div class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        line = input.readline()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        sys.stdout.flush()</div><div class="line">        <span class="keyword">break</span></div><div class="line"></div><div class="line">    match = retag.match(line)</div><div class="line">    <span class="keyword">if</span> match:</div><div class="line">        pref, tagtype, tag, owner, message = match.groups()</div><div class="line"></div><div class="line">        <span class="comment"># filter by multiple package name</span></div><div class="line">        <span class="keyword">if</span> packages <span class="keyword">and</span> owner <span class="keyword">and</span> <span class="keyword">not</span> owner.strip() <span class="keyword">in</span> packages:</div><div class="line">            <span class="keyword">continue</span></div><div class="line"></div><div class="line">        <span class="keyword">if</span> tagtype <span class="keyword">in</span> COLORS:</div><div class="line">            line = <span class="string">"%s%s"</span> % (COLORS[tagtype], line)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> len(line) == <span class="number">0</span>:</div><div class="line">        <span class="keyword">break</span></div><div class="line"></div><div class="line">    sys.stdout.write(line)</div></pre></td></tr></table></figure>
+<h3 id="ADB-截屏"><a href="#ADB-截屏" class="headerlink" title="ADB 截屏"></a>ADB 截屏</h3><ul>
+<li><p>实现方式：</p>
+<blockquote>
+<p>利用 <code>adb shell</code> 的 <code>screencap</code> 命令，先截取屏幕并保存到设备的 /sdcard 目录，之后利用 <code>adb pull</code> 上传到电脑的指定目录，同时删除设备 /sdcard 保存的文件</p>
+</blockquote>
+</li>
+<li><p>运行截图：</p>
+</li>
+</ul>
+<p><img src="/img/adbshot.png" alt="adbshot命令"></p>
+<ul>
+<li>实现脚本(<em>adbshot.py</em>)：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> libadb       <span class="comment"># 导入自定义的 libadb.py</span></div><div class="line"></div><div class="line">args = sys.argv[<span class="number">1</span>:]</div><div class="line"></div><div class="line">dev = libadb.select_target_devices()</div><div class="line"></div><div class="line"><span class="keyword">if</span> dev:</div><div class="line">    dev = <span class="string">'-s %s'</span> % dev</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    dev = <span class="string">''</span></div><div class="line"></div><div class="line">destfile = <span class="keyword">None</span></div><div class="line"><span class="keyword">if</span> len(args):</div><div class="line">    destfile = args[<span class="number">0</span>]</div><div class="line"></div><div class="line">filename = time.strftime(<span class="string">'%Y%m%d%H%M%S'</span>, time.localtime(time.time()))</div><div class="line"></div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> destfile:</div><div class="line">    destfile = <span class="string">"~/Pictures/Screenshot/adbshot/screenshot_%s.png"</span> % filename</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    path, tfile = os.path.split(destfile)</div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path):</div><div class="line">        <span class="keyword">print</span> <span class="string">"Create path: "</span>, path</div><div class="line">        os.system(<span class="string">'mkdir -p %s'</span> % path)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> <span class="string">''</span> == tfile:</div><div class="line">        destfile = <span class="string">'%s/screenshot_%s.png'</span> % (path, filename)</div><div class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> tfile.endswith(<span class="string">'png'</span>):</div><div class="line">        destfile = <span class="string">"%s.png"</span> % destfile</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">"Save device screenshot to "</span>, destfile</div><div class="line">os.system(<span class="string">'adb %s shell screencap -p /sdcard/screen.png \</span></div><div class="line">    &amp;&amp; adb %s pull /sdcard/screen.png %s &amp;&amp; adb %s shell rm /sdcard/screen.png'</div><div class="line">          % (dev, dev, destfile, dev))</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于一直在 Mac 上做 Android 开发，习惯在命令行下使用 adb 命令调试。在开发调试中经常碰到一些问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;多设备连接时，adb 使用很麻烦，每次都要查询设备id然后复制粘贴&lt;/li&gt;
+&lt;li&gt;adb logcat 输出的 Tag 的不同级别不能按颜色区分&lt;/li&gt;
+&lt;li&gt;adb logcat 按包名过滤&lt;/li&gt;
+&lt;li&gt;adb 截屏并保存到指定路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;经常被这些问题搞得很郁闷，所以决定用 Python 扩展下 adb 命令的功能：&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Python" scheme="http://ruikye.com/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://ruikye.com/tags/Python/"/>
+    
+      <category term="Android" scheme="http://ruikye.com/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OS X/Linux 下过滤 svn log</title>
+    <link href="http://ruikye.com/2015/03/06/mac-svn-filter-by-name/"/>
+    <id>http://ruikye.com/2015/03/06/mac-svn-filter-by-name/</id>
+    <published>2015-03-06T05:21:01.000Z</published>
+    <updated>2016-10-15T14:57:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于经常在 Mac 下做软件开发且个人偏向在命令行下使用 <a href="https://subversion.apache.org/" target="_blank" rel="external">Subversion(SVN)</a>。在多人协作开发过程中可能经常需要查看 SVN 的提交历史，所以 <code>svn log</code> 这个命令用的比较多，但是在使用过程中发现这个命令还是满足不了自己的一些需求，比如：只显示某一个的提交或者只显示某天的提交等；各种 Google 搜索后还是找不到方法，所以自己就着么用 Python 写了一个按用户和日期过滤 <code>svn log</code> 的脚本。</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding:utf-8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> sys</div><div class="line"></div><div class="line">argv_len = len(sys.argv)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">help</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'Filter svnlog by user or date!       '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'USEAGE: svnlog [ARGs]                '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'ARGs:                                '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'    -n[=name]:                       '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'      filter by the special [=name]\n'</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'    -t[=date]:                       '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'      filter by the special [=date]  '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'EXP:                                 '</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'1. Filter kang\'s commit log       \n'</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'     svn log -l 50 | svnlog -n=kang\n'</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> argv_len - <span class="number">1</span>:</div><div class="line">    help()</div><div class="line">    quit()</div><div class="line"></div><div class="line">author = <span class="string">''</span></div><div class="line">date = <span class="string">''</span></div><div class="line"></div><div class="line"><span class="keyword">for</span> index <span class="keyword">in</span> range(<span class="number">1</span>, argv_len):</div><div class="line">    argv = sys.argv[index]</div><div class="line">    <span class="keyword">if</span> argv.startswith(<span class="string">'-n='</span>):</div><div class="line">        author = argv.replace(<span class="string">'-n='</span>, <span class="string">''</span>)</div><div class="line">    <span class="keyword">elif</span> argv.startswith(<span class="string">'-t='</span>):</div><div class="line">        date = argv.replace(<span class="string">'-t='</span>, <span class="string">''</span>)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        help()</div><div class="line">        quit()</div><div class="line"></div><div class="line"><span class="keyword">if</span> author == <span class="string">''</span> <span class="keyword">and</span> date == <span class="string">''</span>:</div><div class="line">    help()</div><div class="line">    quit()</div><div class="line"></div><div class="line"><span class="comment"># svn log 输出的分割线</span></div><div class="line">SPLIT_LINE = <span class="string">'------------------------------------------------------------------------'</span></div><div class="line"></div><div class="line">src = <span class="string">''</span>.join(sys.stdin.readlines())</div><div class="line">lines = src.split(SPLIT_LINE)</div><div class="line"></div><div class="line"><span class="keyword">for</span> line <span class="keyword">in</span> lines:</div><div class="line">    <span class="keyword">if</span> author <span class="keyword">in</span> line <span class="keyword">and</span> date <span class="keyword">in</span> line:</div><div class="line">        <span class="keyword">print</span> SPLIT_LINE, line,</div><div class="line"></div><div class="line"><span class="keyword">if</span> len(lines):</div><div class="line">    <span class="keyword">print</span> SPLIT_LINE</div></pre></td></tr></table></figure>
+<p>为了更加方便的使用，修改了下脚本的权限并且加到用户的命令目录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ mv svnlog.py svnlog          # 重命名使之看起来和系统命令一样</div><div class="line"></div><div class="line">$ chmod a+x svnlog             # 添加执行权限</div><div class="line"></div><div class="line">$ cd /usr/local/bin</div><div class="line">$ ln -s ~/mycmd/svnlog filter  # 把执行脚本链接到用户命令目录方便直接使用</div></pre></td></tr></table></figure></p>
+<p>做完上面几步之后，就可以在命令行中方便的使用了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ svn log | filter -n=ruikye -t=2015-03-04 # 查看 ruikye 在 2015/3/4 日的所有提交</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于经常在 Mac 下做软件开发且个人偏向在命令行下使用 &lt;a href=&quot;https://subversion.apache.org/&quot;&gt;Subversion(SVN)&lt;/a&gt;。在多人协作开发过程中可能经常需要查看 SVN 的提交历史，所以 &lt;code&gt;svn log&lt;/code&gt; 这个命令用的比较多，但是在使用过程中发现这个命令还是满足不了自己的一些需求，比如：只显示某一个的提交或者只显示某天的提交等；各种 Google 搜索后还是找不到方法，所以自己就着么用 Python 写了一个按用户和日期过滤 &lt;code&gt;svn log&lt;/code&gt; 的脚本。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Python" scheme="http://ruikye.com/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://ruikye.com/tags/Python/"/>
+    
+      <category term="Linux" scheme="http://ruikye.com/tags/Linux/"/>
+    
+      <category term="svn" scheme="http://ruikye.com/tags/svn/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Github·Gist使用攻略</title>
+    <link href="http://ruikye.com/2014/08/30/github-gist/"/>
+    <id>http://ruikye.com/2014/08/30/github-gist/</id>
+    <published>2014-08-30T08:23:07.000Z</published>
+    <updated>2016-10-15T14:57:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 是 <a href="https://github.com" target="_blank" rel="external">Github</a> 推出的基于 Git 的代码片段管理服务。用户可以提交自己的代码片段或任意的文本，可以作为个人的代码管理库、文档管理库等。同时 <a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 页面提供访问的 <a href="http://www.baidu.com/s?wd=javascript" target="_blank" rel="external">JavaScript</a> 片段用于嵌入其他网站，如：个人博客等。</p>
+<blockquote>
+<p>但是很多站点粘贴 JavaScript 无效，这时候你可以在 Gist URL 后附加.pibb，得到一个纯 HTML 的版本，然后就可以复制粘贴 HTML 源码到其他网站了。例如: <a href="https://gist.github.com/tiimgreen/10545817.pibb" target="_blank" rel="external">https://gist.github.com/tiimgreen/10545817.pibb</a></p>
+</blockquote>
+<a id="more"></a>
+<p><a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 作为程序猿居家旅行必备的代码管理工具，极大的方便了 Coder。下面是自己的一些使用 <a href="http://gist.github.com" target="_blank" rel="external">Gist</a> 经验，分享给各位看官：</p>
+<p>使用 <a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 前提必须注册 <a href="http://github.com" target="_blank" rel="external">Github</a> 账户，账户注册比较简单，这里就不做介绍了</p>
+<blockquote>
+<p>如果不知 Github、Git为何物的童鞋就当这个页面不存在吧 ^_^.  </p>
+</blockquote>
+<p>使用、管理 <a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 的几种方式：</p>
+<h2 id="使用-Github-Gist"><a href="#使用-Github-Gist" class="headerlink" title="使用 Github Gist"></a>使用 <a href="https://gist.github.com" target="_blank" rel="external">Github Gist</a></h2><blockquote>
+<p>Gist 是以问件的方式管理的，每条 Gist </p>
+</blockquote>
+<p>可以包含若干个文件，文件内容会自动根据选择存储的类型高亮代码，除了支持各种的编程语言外还支持一些常见的文本，如：Markdown、Diff、TeX等。<br>登录 <a href="https://github.com" target="_blank" rel="external">Github</a> 后访问 <a href="https://gist.github.com" target="_blank" rel="external">https://gist.github.com</a> 就打开了个人的 Gist 管理界面，如图点击右上角的 “+” 就可以新建一个 Gist了：</p>
+<blockquote>
+<p><img src="/img/new_tips.png" alt="创建gist"></p>
+</blockquote>
+<p><a href="https://gist.github.com" target="_blank" rel="external">Gist</a> 的整体界面相当的简洁、明了，操作也比较简单。如果不想这条 Gist 被搜索引擎抓取，可以选择创建私有的 Gist, 但是还是可以通过 URL直接访问到的。</p>
+<blockquote>
+<p>注意：Gist 的私有和 Github 的私有项目是不同的</p>
+<p><img src="/img/private.png" alt="私有Gist"></p>
+</blockquote>
+<h2 id="使用-Sublime-Text-Gist插件"><a href="#使用-Sublime-Text-Gist插件" class="headerlink" title="使用 Sublime Text + Gist插件"></a>使用 <a href="http://www.baidu.com/s?wd=sublime text" target="_blank" rel="external">Sublime Text</a> + <a href="https://github.com/condemil/Gist" target="_blank" rel="external">Gist插件</a></h2><blockquote>
+<p>Sublime Text 是一个代码编辑器（Sublime Text 2是收费软件，但可以无限期试用），也是HTML和散文先进的文本编辑器。Sublime Text是由程序员Jon Skinner于2008年1月份所开发出来，它最初被设计为一个具有丰富扩展功能的Vim。— 百度百科</p>
+<p>不知 Sublime Text 为何物或者无爱的请忽略</p>
+</blockquote>
+<p>安装 Gist 插件：</p>
+<p>打开 Sublime Text, 按下快捷键<code>CTRL(⌘)+SHIFT+P</code>打开 Package Control面板，输入<code>Install packages</code>在弹出的插件列表中搜索<code>Gist</code>,回车就开始安装 <a href="https://github.com/condemil/Gist" target="_blank" rel="external">Gist插件</a> 了<br>如果没有安装 Package Controll 插件，请先安装, 打开 Sublime Text的<em>Console</em> (<code>CTRL+反引号</code>) 输入以下代码：</p>
+<ul>
+<li><p><em>Sublime Text 3</em></p>
+<p>import urllib.request,os; pf = ‘Package Control.sublime-package’; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), ‘wb’).write(urllib.request.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ + pf.replace(‘ ‘,’%20’)).read())</p>
+</li>
+<li><p><em>Sublime Text 2</em></p>
+<p>import urllib2,os; pf=’Package Control.sublime-package’; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler( ))); open( os.path.join( ipp, pf), ‘wb’ ).write( urllib2.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ +pf.replace( ‘ ‘,’%20’ )).read()); print( ‘Please restart Sublime Text to finish installation’)</p>
+</li>
+<li><p><em>手动安装</em></p>
+<p>可能由于各种原因，无法使用代码安装，那可以通过以下步骤手动安装Package Control：  </p>
+<ol>
+<li>点击Preferences &gt; Browse Packages菜单  </li>
+<li>进入打开的目录的上层目录，然后再进入Installed Packages/目录  </li>
+<li>下载Package Control.sublime-package并复制到Installed Packages/目录  </li>
+<li>重启Sublime Text。</li>
+</ol>
+</li>
+</ul>
+<p>安装 Gist 之后，配置 Github 的账户 Token，用命令行工具输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -v -u USERNAME -X POST https://api.github.com/authorizations --data &quot;&#123;\&quot;scopes\&quot;:[\&quot;gist\&quot;], \&quot;note\&quot;: \&quot;SublimeText 2/3 Gist plugin\&quot;&#125;&quot;</div></pre></td></tr></table></figure></p>
+<p>其中 <code>USERNAME</code> 你的 Github 帐号名。执行成功之后会输出以下代码：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"id"</span>: <span class="number">107</span>···<span class="number">41</span>,</div><div class="line">    <span class="attr">"url"</span>: <span class="string">"https://api.github.com/authorizations/107···41"</span>,    <span class="attr">"app"</span>: &#123;</div><div class="line">        <span class="attr">"name"</span>: <span class="string">"SublimeText 2/3 Gist plugin (API)"</span>,</div><div class="line">        <span class="attr">"url"</span>: <span class="string">"https://developer.github.com/v3/oauth_authorizations/"</span>,</div><div class="line">        <span class="attr">"client_id"</span>: <span class="string">"00000000000000000000"</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"token"</span>: <span class="string">"a28b686c3a74······c300f42414c7"</span>,</div><div class="line">    <span class="attr">"note"</span>: <span class="string">"SublimeText 2/3 Gist plugin"</span>,</div><div class="line">    <span class="attr">"note_url"</span>: <span class="literal">null</span>,</div><div class="line">    <span class="attr">"created_at"</span>: <span class="string">"2014-08-25T10:54:00Z"</span>,</div><div class="line">    <span class="attr">"updated_at"</span>: <span class="string">"2014-08-25T10:54:00Z"</span>,</div><div class="line">    <span class="attr">"scopes"</span>: [</div><div class="line">        <span class="string">"gist"</span></div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>按下图所示打开 Gist 插件的配置文件：</p>
+<p><img src="/img/menu.png" alt="menu"></p>
+<p>添加 Github Token:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    // Your GitHub API token</div><div class="line">    // see: https://github.com/condemil/Gist#generating-access-token</div><div class="line">    "token": "a28b686c3a74······c300f42414c7", // 从命令行得到的 token</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上，Sublime Text 2/3 的 Gist 插件就配置好了。配置好后，在 Sublime Text 的 <code>Tools</code> ⟶ <code>Gist</code> 菜单下有使用 Gist 的一些命令，如图：</p>
+<blockquote>
+<p><img src="/img/gist_tools.png" alt="gist_tools"></p>
+<p>使用 Gist 插件很爽的一点是，当你编辑完 gist 文件保存时会自动的帮你同步到 Github·Gist 不用担心没保存丢失，保存 Gist 时可以从 <em>Console</em> 看到同步日志</p>
+</blockquote>
+<h2 id="使用-GistBox-服务"><a href="#使用-GistBox-服务" class="headerlink" title="使用 GistBox 服务"></a>使用 <a href="http://www.gistboxapp.com/" target="_blank" rel="external">GistBox</a> 服务</h2><blockquote>
+<p>GistBox 提供一种漂亮的方式来组织代码片段。将你的库保存到云端进行备份，再也不用担心丢失。GistBox采用标准的HTML5技术构建。GistBox使用GitHub的后端，但增加了自己的标签和搜索功能层。使用Github账号登陆Gistbox可以将你的代码直接同步进来，反过来，你在GB上的所有改动也都会同步到Github上；GistBox的结构设 计清晰，从左至右分别是主导航（新建Gist，Gists入口，收藏入口-Labels）、Gists列表（Public/Private）、具体代码 区，亲们可以用Label给代码加上各种分辨标签，方便分类整理，在检索代码时可以用顶部的搜索栏，输入关键词或Label可以更快的搜索到目标代码。</p>
+</blockquote>
+<p>GistBox 是可以直接用 Github 账户登录的，实时同步你的 Gist 到 Github，很方便。GitBox 从体验上来说更加方便，界面元素丰富，功能也比较全。如果不想用 Sublime Text, 又觉着 Github 自己的 Gist 管理太简单，GistBox是一种不错的方式。</p>
+<blockquote>
+<p>GistBox 同时提供了 Chrome 插件</p>
+</blockquote>
+<p>以上就是我使用 Gist 的一些经验，感谢读完全文！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://gist.github.com&quot;&gt;Gist&lt;/a&gt; 是 &lt;a href=&quot;https://github.com&quot;&gt;Github&lt;/a&gt; 推出的基于 Git 的代码片段管理服务。用户可以提交自己的代码片段或任意的文本，可以作为个人的代码管理库、文档管理库等。同时 &lt;a href=&quot;https://gist.github.com&quot;&gt;Gist&lt;/a&gt; 页面提供访问的 &lt;a href=&quot;http://www.baidu.com/s?wd=javascript&quot;&gt;JavaScript&lt;/a&gt; 片段用于嵌入其他网站，如：个人博客等。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;但是很多站点粘贴 JavaScript 无效，这时候你可以在 Gist URL 后附加.pibb，得到一个纯 HTML 的版本，然后就可以复制粘贴 HTML 源码到其他网站了。例如: &lt;a href=&quot;https://gist.github.com/tiimgreen/10545817.pibb&quot;&gt;https://gist.github.com/tiimgreen/10545817.pibb&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="Software" scheme="http://ruikye.com/categories/Software/"/>
+    
+    
+      <category term="Github" scheme="http://ruikye.com/tags/Github/"/>
+    
+      <category term="Gist" scheme="http://ruikye.com/tags/Gist/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Sublime Text 推荐插件</title>
+    <link href="http://ruikye.com/2014/08/30/SublimeText-Plugins/"/>
+    <id>http://ruikye.com/2014/08/30/SublimeText-Plugins/</id>
+    <published>2014-08-30T08:14:20.000Z</published>
+    <updated>2016-10-15T14:57:41.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>Sublime Text 是一个代码编辑器（Sublime Text 2是收费软件，但可以无限期试用），也是HTML和散文先进的文本编辑器。Sublime Text是由程序员Jon Skinner于2008年1月份所开发出来，它最初被设计为一个具有丰富扩展功能的Vim。— 百度百科</p>
+</blockquote>
+<h4 id="Package-Control"><a href="#Package-Control" class="headerlink" title="Package Control"></a><a href="https://github.com/wbond/sublime_package_control" target="_blank" rel="external">Package Control</a></h4><p>Package Control 是 Sublime Text 管理其他插件的工具，可以实现在线安装、删除插件等功能。</p>
+<a id="more"></a>
+<p>安装方法，打开 Sublime Text，按快捷键 <code>CTRL+反引号</code> 调出控制台(<em>Console</em>), 输入以下代码 ：</p>
+<pre><code>Sublime Text 2 安装代码：
+</code></pre><blockquote>
+<p>import urllib2,os; pf=’Package Control.sublime-package’; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler( ))); open( os.path.join( ipp, pf), ‘wb’ ).write( urllib2.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ +pf.replace( ‘ ‘,’%20’ )).read()); print( ‘Please restart Sublime Text to finish installation’)</p>
+</blockquote>
+<pre><code>Sublime Text 3 安装代码：
+</code></pre><blockquote>
+<p>import urllib.request,os; pf = ‘Package Control.sublime-package’; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), ‘wb’).write(urllib.request.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ + pf.replace(‘ ‘,’%20’)).read())</p>
+</blockquote>
+<pre><code>手动安装
+</code></pre><blockquote>
+<p>可能由于各种原因，无法使用代码安装，那可以通过以下步骤手动安装Package Control：</p>
+<ol>
+<li>点击Preferences &gt; Browse Packages菜单<ol>
+<li>进入打开的目录的上层目录，然后再进入Installed Packages/目录</li>
+<li>下载Package Control.sublime-package并复制到Installed Packages/目录</li>
+<li>重启Sublime Text。</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p> 安装完成后，可以使用<code>CTRL(CMD)+SHIFT+P</code>快捷键打开控制面板，输入: <em>package control</em> 。</p>
+<h4 id="SideBarEnhancements"><a href="#SideBarEnhancements" class="headerlink" title="SideBarEnhancements"></a><a href="https://github.com/titoBouzout/SideBarEnhancements" target="_blank" rel="external">SideBarEnhancements</a></h4><p>直接使用 Package Control 安装，SideBarEnhancements是 Sublime Text中强大的 Sidebar 插件，Sublime Text 本身的 Sidebar 提供的右键菜单非常简陋，有 SideBarEnhancements 之后，可以实现很多使用的功能，比如：在文件浏览器中打开文件等。</p>
+<h4 id="ConvertToUTF8"><a href="#ConvertToUTF8" class="headerlink" title="ConvertToUTF8"></a><a href="https://github.com/seanliang/ConvertToUTF8" target="_blank" rel="external">ConvertToUTF8</a></h4><p>直接使用 Package Control 安装。Sublime Text 本对中文支持不太好，如果直接打开 GBK 编码格式的文件会出现乱码的情况，ConvertToUTF8 可以将 GBK 等其他的编码文件转换为 UTF8 显示，解决中文乱码问题。</p>
+<blockquote>
+<p>通过本插件，您可以编辑并保存目前编码不被 Sublime Text 支持的文件，特别是中日韩用户使用的 GB2312，GBK，BIG5，EUC-KR，EUC-JP 等。ConvertToUTF8 同时支持 Sublime Text 2 和 3。 —– ConvertToUTF8 官方介绍</p>
+</blockquote>
+<h4 id="JsFormat"><a href="#JsFormat" class="headerlink" title="JsFormat"></a><a href="https://github.com/jdc0589/JsFormat" target="_blank" rel="external">JsFormat</a></h4><p>直接使用 Package Control 安装。JsFormat 顾名思义，是一个可以格式化 JavaScript 代码的插件（也可以格式化Json），格式化是文件名必须保存问 *.js 或 *.json, 这样插件才能识别出代码。</p>
+<h4 id="Markdown-Preview"><a href="#Markdown-Preview" class="headerlink" title="Markdown Preview"></a><a href="https://github.com/revolunet/sublimetext-markdown-preview" target="_blank" rel="external">Markdown Preview</a></h4><p>直接使用 Package Control 安装。Markdown Preview 是一个支持 Markdown 标记语言的插件，Sublime Text 本身是支持 Markdown 的，但是显示不太美观。同时， Markdown Preview 还支持导出 HTML 或者在浏览器中打开预览。</p>
+<p>使用方法：</p>
+<blockquote>
+<p>打开控制面板（<code>CTRL+SHIFT+P</code>），输入: <em>markdown preview</em> 就可看到相关的命令了。</p>
+</blockquote>
+<h4 id="MarkdownEditing"><a href="#MarkdownEditing" class="headerlink" title="MarkdownEditing"></a><a href="https://github.com/SublimeText-Markdown/MarkdownEditing" target="_blank" rel="external">MarkdownEditing</a></h4><p>直接使用 Package Control 安装。MardownEditing 是一款功能更加强大的 Markdown 插件。最大的特色是支持 <a href="https://help.github.com/articles/github-flavored-markdown" target="_blank" rel="external">GFM</a> ( GitHub flavored Markdown) 代码高亮。</p>
+<blockquote>
+<p>Markdown plugin for Sublime Text. Provides a decent Markdown color scheme (light and dark) with more robust syntax highlighting and useful Markdown editing features for Sublime Text. 3 flavors are supported: Standard Markdown, GitHub flavored Markdown, MultiMarkdown. </p>
+</blockquote>
+<h4 id="Spacegray"><a href="#Spacegray" class="headerlink" title="Spacegray"></a><a href="https://github.com/kkga/spacegray" target="_blank" rel="external">Spacegray</a></h4><p>直接使用 Package Control 安装。Spacegray 是一款高大上的 Sublime Text 主题。有 Ocean Dark、 Ocean Light 和 Eighties Dark 三中主题。</p>
+<p>其他的插件还有：<a href="https://github.com/SublimeText/Tag" target="_blank" rel="external">Tag</a>, <a href="https://github.com/condemil/Gist" target="_blank" rel="external">Gist</a>, <a href="https://github.com/wbond/sublime_alignment" target="_blank" rel="external">Alignment</a>, <a href="https://github.com/alienhard/SublimeAllAutocomplete" target="_blank" rel="external">All AutoComplete</a> 等等…</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;Sublime Text 是一个代码编辑器（Sublime Text 2是收费软件，但可以无限期试用），也是HTML和散文先进的文本编辑器。Sublime Text是由程序员Jon Skinner于2008年1月份所开发出来，它最初被设计为一个具有丰富扩展功能的Vim。— 百度百科&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;Package-Control&quot;&gt;&lt;a href=&quot;#Package-Control&quot; class=&quot;headerlink&quot; title=&quot;Package Control&quot;&gt;&lt;/a&gt;&lt;a href=&quot;https://github.com/wbond/sublime_package_control&quot;&gt;Package Control&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;Package Control 是 Sublime Text 管理其他插件的工具，可以实现在线安装、删除插件等功能。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Software" scheme="http://ruikye.com/categories/Software/"/>
+    
+    
+      <category term="Sublime Text" scheme="http://ruikye.com/tags/Sublime-Text/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hexo 搭建个人博客 · 进阶篇</title>
+    <link href="http://ruikye.com/2014/08/30/Hexo-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%C2%B7-%E8%BF%9B%E9%98%B6%E7%AF%87/"/>
+    <id>http://ruikye.com/2014/08/30/Hexo-搭建个人博客-·-进阶篇/</id>
+    <published>2014-08-30T05:07:26.000Z</published>
+    <updated>2016-10-15T15:09:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Hexo-配置文件-config-yml"><a href="#Hexo-配置文件-config-yml" class="headerlink" title="Hexo 配置文件 _config.yml"></a>Hexo 配置文件 <em>_config.yml</em></h2><p>Hexo 的各种通用的配置都是在博客根目录行下的 <em>_config.yml</em> 文件中设置的。下面介绍一些常用的配置项：</p>
+<a id="more"></a>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Site 基本信息</span></div><div class="line">title: Ruikye                      <span class="comment"># 博客标题，如左上角显示</span></div><div class="line">subtitle: ruikye 的个人博客         <span class="comment"># 博客副标题</span></div><div class="line">description: 移动开发技术分享博客     <span class="comment"># 用于搜索引擎搜索到的描述信息</span></div><div class="line">author: 零雨の夜                    <span class="comment"># 博客署名，一般会现在在博客的最下方，rg: &amp;copy;2014 零雨の夜</span></div><div class="line">email: xxx@xxx.com                <span class="comment"># 可不填</span></div><div class="line">language: zh-CN                   <span class="comment"># 让博客支持中文</span></div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment"># Writing</span></div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">highlight:              <span class="comment"># 代码高亮</span></div><div class="line">  <span class="built_in">enable</span>: <span class="literal">true</span>          <span class="comment"># 开启代码高亮</span></div><div class="line">  line_number: <span class="literal">false</span>    <span class="comment"># 是否显示行号</span></div><div class="line">  tab_replace: <span class="literal">true</span>     <span class="comment"># 是否替换 tab 为空格</span></div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment"># Pagination</span></div><div class="line"><span class="comment">## Set per_page to 0 to disable pagination</span></div><div class="line">per_page: 1             <span class="comment"># 文章分页时，每页最多显示文章数，eg: 我的博客在首页和归档页最多只显示一篇文章</span></div><div class="line">pagination_dir: page    <span class="comment"># 分页目录</span></div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment"># Extensions</span></div><div class="line"><span class="comment">## Plugins: https://github.com/hexojs/hexo/wiki/Plugins</span></div><div class="line"><span class="comment">## Themes: https://github.com/hexojs/hexo/wiki/Themes</span></div><div class="line">theme: bs-light         <span class="comment"># 这里配置博客的主题风格，主题安装在 themes/ 目录下，这里的值就是主题的文件夹名字 </span></div><div class="line">exclude_generator:</div><div class="line"></div><div class="line">plugins:</div><div class="line">- hexo-generator-feed   <span class="comment"># 安装、启用的插件，这里是启动 RSS 订阅的插件</span></div><div class="line"></div><div class="line"><span class="comment"># Deployment</span></div><div class="line"><span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></div><div class="line">deploy:</div><div class="line">  <span class="built_in">type</span>: github                                                  <span class="comment"># 博客托管服务器类型</span></div><div class="line">  repository: https://github.com/rakkang/rakkang.github.io.git  <span class="comment"># 托管服务器地址</span></div><div class="line">  brach: master                                                 <span class="comment"># 博客使用的代码分支</span></div></pre></td></tr></table></figure>
+<p>除了 Hexo 的通用配置外，每个主题还有各自的配置文件，主题的配置文件放在：themes/[xxx]/_config.yml, eg: themes/bs-light/_config.yml，下面以 <code>bs-light</code> 为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># 导航栏，如右上角的显示，Tips: RSS 栏是插件添加的不再这里</div><div class="line">menu:</div><div class="line">  首页: /                 # 格式是：[显示标签]:[索引目录]</div><div class="line">  存档: /archives</div><div class="line"></div><div class="line"># 文章右边的小部件</div><div class="line">widgets:</div><div class="line"># search/tag/category/recent_posts/tagcloud   ----&gt; 这里是 bs-light 的可用小部件</div><div class="line">- search                 # 搜索框</div><div class="line">- recent_posts           # 最近发布的文章</div><div class="line">- category               # 存档目录</div><div class="line">- tagcloud               # 文章的标签集合</div><div class="line"></div><div class="line"># 如果在文章的 *.md 中使用 &lt;!-- more --&gt;，那么之后的内容不会在首页显示，而是显示 阅读全文 的链接，显示可以更改</div><div class="line"># 如：更多，查看原文等</div><div class="line">excerpt_link: 阅读全文</div><div class="line"></div><div class="line"># 博客的社交分享，eg: 博客底部的两个图标</div><div class="line">social:</div><div class="line"># key weibo/twitter/google/github/stackoverflow/rss</div><div class="line"># value url</div><div class="line"># e.g github: https://github.com/DaiXiang</div><div class="line">  github: https://github.com/rakkang</div><div class="line">  rss: /atom.xml</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">cnzz_analytics: true     # 博客的访问统计，这里使用 CNZZ 的统计</div><div class="line"># google_analytics:</div><div class="line"># rss:</div><div class="line"></div><div class="line"># comment_provider:      # 评论功能，一般使用国内的 多说评论</div><div class="line"># Facebook comment</div></pre></td></tr></table></figure>
+<h2 id="为文章添加-Tag、Category-属性"><a href="#为文章添加-Tag、Category-属性" class="headerlink" title="为文章添加 Tag、Category 属性"></a>为文章添加 <em>Tag</em>、<em>Category</em> 属性</h2><p>通常，使用下面命令新建的文章模版时，会在文章模版的头部出现一些属性信息：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo <span class="built_in">new</span> <span class="built_in">post</span> <span class="string">"a new article"</span></div></pre></td></tr></table></figure></p>
+<p>文章模版的属性信息：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">title: Hexo 搭建个人博客 · 进阶篇    <span class="comment"># 文章显示标题</span></div><div class="line">date: 2014-08-30 13:07:26         <span class="comment"># 文章创建日期</span></div><div class="line">tags: hexo                        <span class="comment"># Tag 属性，如果多个 Tag 使用：[Tag 1, Tag 2 ...]</span></div><div class="line">categories: hexo                  <span class="comment"># Category 属性，多个时使用：[Category 1, ...]；默认是没有这个的，下面有介绍</span></div><div class="line">---</div></pre></td></tr></table></figure></p>
+<p>在模版中添加 <em>Categories</em> 属性，在博客根目录下 scaffolds/ 文件夹中有各种文章类型的模版，比如在：scaffolds/post.md 中：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">title: title</div><div class="line">date: date</div><div class="line">tags:</div><div class="line">categories:                       <span class="comment"># 在这里添加 Category 属性，如果要修改其他的模版，同样的修改方式</span></div></pre></td></tr></table></figure></p>
+<h2 id="添加多说评论"><a href="#添加多说评论" class="headerlink" title="添加多说评论"></a>添加多说评论</h2><p>Hexo 默认使用的 Facebook 的评论代码，在天朝由于众所周知的原因，不能使用。这里介绍使用过年的多说评论：<br>多说官网：<a href="http://duoshuo.com/" target="_blank" rel="external">http://duoshuo.com/</a>, 现在多少网址注册，按流程拿到代码：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 多说评论框 start --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"ds-thread"</span> </span></div><div class="line">     <span class="attr">data-thread-key</span>=<span class="string">"请将此处替换成文章在你的站点中的ID"</span> </div><div class="line">     <span class="attr">data-title</span>=<span class="string">"请替换成文章的标题"</span> </div><div class="line">     <span class="attr">data-url</span>=<span class="string">"请替换成文章的网址"</span>&gt;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 多说评论框 end --&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="javascript"></span></div><div class="line"><span class="keyword">var</span> duoshuoQuery = &#123;<span class="attr">short_name</span>:<span class="string">"ruikye"</span>&#125;;</div><div class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> ds = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</div><div class="line">        ds.type = <span class="string">'text/javascript'</span>;ds.async = <span class="literal">true</span>;</div><div class="line">        ds.src = (<span class="built_in">document</span>.location.protocol == <span class="string">'https:'</span> ? </div><div class="line">                    <span class="string">'https:'</span> : <span class="string">'http:'</span>) + <span class="string">'//static.duoshuo.com/embed.js'</span>;</div><div class="line">        ds.charset = <span class="string">'UTF-8'</span>;</div><div class="line">        (<span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>] </div><div class="line">         || <span class="built_in">document</span>.getElementsByTagName(<span class="string">'body'</span>)[<span class="number">0</span>]).appendChild(ds);</div><div class="line">    &#125;)();</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="comment">&lt;!-- 多说公共JS代码 end --&gt;</span></div></pre></td></tr></table></figure></p>
+<p>首先，打开 themes/[xxx]/layout/_partial/article.ejs 文件，在最后面添加多说评论框：<br><figure class="highlight erb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">%</span></span></span><span class="ruby"> <span class="keyword">if</span> (page.comments)&#123; </span><span class="xml"><span class="tag">%&gt;</span></span></div><div class="line">    <span class="comment">&lt;!-- 多说评论框 start --&gt;</span></div><div class="line">    ...</div><div class="line">    <span class="comment">&lt;!-- 多说评论框 end --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">%</span></span><span class="ruby"> &#125; </span><span class="xml"><span class="tag">%&gt;</span></span></div></pre></td></tr></table></figure></p>
+<p>然后，打开 themes/[xxx]/layout/_partial/after_footer.ejs 文件，在最后添加多说 JS 脚本代码：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;</span></div><div class="line">...</div><div class="line"><span class="comment">&lt;!-- 多说公共JS代码 end --&gt;</span></div></pre></td></tr></table></figure></p>
+<p>这样多说评论就添加好了，点击文章的标题，在打开的页面下方就会出现多说的评论框。</p>
+<h2 id="添加百度分享"><a href="#添加百度分享" class="headerlink" title="添加百度分享"></a>添加百度分享</h2><p>同样，使用百度分享要先到百度分享官网：<a href="http://share.baidu.com/" target="_blank" rel="external">http://share.baidu.com/</a> 按照流程获取 JS 脚本代码。打开 themes/[xxx]/layout/_partial/post/share.ejs，删除文件内容，用获取到的百度分享代码替换：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bdsharebuttonbox"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_more"</span> <span class="attr">data-cmd</span>=<span class="string">"more"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_qzone"</span> <span class="attr">data-cmd</span>=<span class="string">"qzone"</span> <span class="attr">title</span>=<span class="string">"分享到QQ空间"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_tsina"</span> <span class="attr">data-cmd</span>=<span class="string">"tsina"</span> <span class="attr">title</span>=<span class="string">"分享到新浪微博"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_tqq"</span> <span class="attr">data-cmd</span>=<span class="string">"tqq"</span> <span class="attr">title</span>=<span class="string">"分享到腾讯微博"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_renren"</span> <span class="attr">data-cmd</span>=<span class="string">"renren"</span> <span class="attr">title</span>=<span class="string">"分享到人人网"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"bds_weixin"</span> <span class="attr">data-cmd</span>=<span class="string">"weixin"</span> <span class="attr">title</span>=<span class="string">"分享到微信"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="built_in">window</span>._bd_share_config = &#123;</div><div class="line">        <span class="string">"common"</span>: &#123;</div><div class="line">            <span class="string">"bdSnsKey"</span>: &#123;&#125;,</div><div class="line">            <span class="string">"bdText"</span>: <span class="string">""</span>,</div><div class="line">            <span class="string">"bdMini"</span>: <span class="string">"1"</span>,</div><div class="line">            <span class="string">"bdMiniList"</span>: <span class="literal">false</span>,</div><div class="line">            <span class="string">"bdPic"</span>: <span class="string">""</span>,</div><div class="line">            <span class="string">"bdStyle"</span>: <span class="string">"1"</span>,</div><div class="line">            <span class="string">"bdSize"</span>: <span class="string">"16"</span></div><div class="line">        &#125;,</div><div class="line">        <span class="string">"share"</span>: &#123;&#125;,</div><div class="line">        <span class="string">"image"</span>: &#123;</div><div class="line">            <span class="string">"viewList"</span>: [<span class="string">"qzone"</span>, <span class="string">"tsina"</span>, <span class="string">"tqq"</span>, <span class="string">"renren"</span>, <span class="string">"weixin"</span>],</div><div class="line">            <span class="string">"viewText"</span>: <span class="string">"分享到："</span>,</div><div class="line">            <span class="string">"viewSize"</span>: <span class="string">"16"</span></div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">with</span>(<span class="built_in">document</span>) <span class="number">0</span>[(getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>] || body).appendChild(createElement(<span class="string">'script'</span>)).src = </div><div class="line">            <span class="string">'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='</span> </div><div class="line">                    + ~ ( - <span class="keyword">new</span> <span class="built_in">Date</span>() / <span class="number">36e5</span>)];</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h2 id="安装-RSS-插件"><a href="#安装-RSS-插件" class="headerlink" title="安装 RSS 插件"></a>安装 RSS 插件</h2><p>RSS 插件要依赖 Node.js 安装，进入博客的本目了，执行命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-feed --save</div></pre></td></tr></table></figure></p>
+<p>安装之后，可以在通用的 <em>_config.yml</em> 文件中配置插件：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">feed:</div><div class="line">    <span class="built_in">type</span>: atom</div><div class="line">    path: atom.xml</div><div class="line">    <span class="built_in">limit</span>: 20</div></pre></td></tr></table></figure></p>
+<h2 id="安装-Sitemap"><a href="#安装-Sitemap" class="headerlink" title="安装 Sitemap"></a>安装 Sitemap</h2><p>Sitemap 是搜索引擎抓取网站要用到的，安装命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo-generator-sitemap --save</div></pre></td></tr></table></figure></p>
+<p>可选配置：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sitemap:</div><div class="line">    path: sitemap.xml</div></pre></td></tr></table></figure></p>
+<p>按上面的配置之后，你的博客立马变得功能丰富了很多有木有～～～</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>【1】：<a href="https://github.com/hexojs/hexo/wiki/Plugins" target="_blank" rel="external">https://github.com/hexojs/hexo/wiki/Plugins</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Hexo-配置文件-config-yml&quot;&gt;&lt;a href=&quot;#Hexo-配置文件-config-yml&quot; class=&quot;headerlink&quot; title=&quot;Hexo 配置文件 _config.yml&quot;&gt;&lt;/a&gt;Hexo 配置文件 &lt;em&gt;_config.yml&lt;/em&gt;&lt;/h2&gt;&lt;p&gt;Hexo 的各种通用的配置都是在博客根目录行下的 &lt;em&gt;_config.yml&lt;/em&gt; 文件中设置的。下面介绍一些常用的配置项：&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Hexo" scheme="http://ruikye.com/categories/Hexo/"/>
+    
+    
+      <category term="Hexo" scheme="http://ruikye.com/tags/Hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hexo 搭建个人博客 · 基础篇</title>
+    <link href="http://ruikye.com/2014/08/29/Hexo-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%C2%B7-%E5%9F%BA%E7%A1%80%E7%AF%87/"/>
+    <id>http://ruikye.com/2014/08/29/Hexo-搭建个人博客-·-基础篇/</id>
+    <published>2014-08-29T14:35:13.000Z</published>
+    <updated>2016-10-15T15:09:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Github 为了更好的程序员介绍自己的项目，提供了 Pages 功能，Pages 功能就是为每个项目提供一种静态网页的描述方式，很多网友就利用 Pages 功能搭建了自己的个人博客，这篇文章就是介绍如何使用 Hexo 快速的在 Github 上搭建自己的个人博客。</p>
+<blockquote>
+<p>Github 的 Pages 功能是免费的，省去了直接搭建博客的服务器成本；但是也有一定的限制，免费用户空间上线是 300M, 只能建立静态的个人博客，如果要建立动态网站还是用 WordPress 比较靠谱</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h2><h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h3><p>Hexo 是一个基于 Node.js 的静态博客程序，可以方便的生成静态网页托管在 Github 和 Heroku上。作者是来自台湾的<a href="https://github.com/hexojs/hexo" target="_blank" rel="external">@tommy351</a>。官方介绍：</p>
+<blockquote>
+<p>A fast, simple &amp; powerful blog framework, powered by Node.js.<br>基于 Node.js 的快速、简洁但功能强大的博客框架。</p>
+</blockquote>
+<p>Hexo 在 Gihub 上的主页是：<a href="https://github.com/hexojs/hexo" target="_blank" rel="external">https://github.com/hexojs/hexo</a></p>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><p>由于使用 Hexo 需要依赖 Node.js, 所以对此进行简单的介绍，直接引用百度百科的内容：</p>
+<blockquote>
+<p>Node.js 是一个基于Chrome JavaScript 运行时建立的一个平台，用来方便地搭建快速的易于扩展的网络应用. Node.js 借助事件驱动，非阻塞 I/O 模型变得轻量和高效， 非常适合运行在分布式设备的数据密集型的实时应用. Node.js 对 Google V8 引擎(应用于 Google Chrome 浏览器)进行了封装.</p>
+</blockquote>
+<h3 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h3><p>因为 Hexo 要将网站托管在 Github 上，也简单介绍下：</p>
+<blockquote>
+<p>Gist 是 Github 推出的基于 Git 的代码片段服务。用户可以提交自己的代码片段或任意的文本作，可以作为个人的代码管理库、文档管理库等。</p>
+</blockquote>
+<p>如果没有用过 Github, 先到 <a href="http://www.github.com" target="_blank" rel="external">http://www.github.com</a> 上去注册一个账户，托管博客要用到。</p>
+<h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><p>Github 是 Git 的托管仓库，虽然用不到 Git 命令，但是 Hexo 也是依赖 Git 的。</p>
+<blockquote>
+<p>Git是一个开源的分布式版本控制系统，用以有效、高速的处理从很小到非常大的项目版本管理。[4]<br>Git 是 Linus Torvalds 为了帮助管理 Linux 内核开发而开发的一个开放源码的版本控制软件。<br>Torvalds 开始着手开发 Git 是为了作为一种过渡方案来替代 BitKeeper，后者之前一直是 Linux 内核开发人员在全球使用的主要源代码工具。</p>
+</blockquote>
+<p>如果使用 Windows 的童鞋，还请先到 <a href="http://git-scm.com/" target="_blank" rel="external">http://git-scm.com/</a> 下载 Git 客户端，Mac 本身自带 git, 用 Linux 的童鞋应该是比较专业的，就不介绍了。</p>
+<h2 id="搭建博客："><a href="#搭建博客：" class="headerlink" title="搭建博客："></a>搭建博客：</h2><p>在使用 Hexo 之前，请先安装 Node.js 以及 Git，Node.js 和 Git 都有安装包，可以到官网去下载：</p>
+<blockquote>
+<p>Node.js 官网：<a href="http://www.nodejs.org/" target="_blank" rel="external">http://www.nodejs.org/</a><br>Git 官网：<a href="http://git-scm.com" target="_blank" rel="external">http://git-scm.com</a></p>
+</blockquote>
+<p>另外说明下：因为手头只有一台 Mac，所以下面使用的命令都是在 Mac 终端的，如果使用 Windows 的话，Git 有个 <em>Git Bash</em> 的程序，是一个模拟的终端，可以执行一些命令。</p>
+<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><p>打开终端，执行命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install hexo -g</div></pre></td></tr></table></figure></p>
+<p>Hexo 安装成功之后，在任意目录新建一个子目录并切换到这个目录，这就是本地的博客目录：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ~</div><div class="line">$ mkdir MyB<span class="built_in">log</span></div><div class="line">$ <span class="built_in">cd</span> MyB<span class="built_in">log</span></div></pre></td></tr></table></figure></p>
+<p>初始化本地博客目录：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ hexo init</div><div class="line">$ npm install</div></pre></td></tr></table></figure></p>
+<p>至此，本地的博客就搭建好了，是不是超简单 ^_^！<br>如果要本地查看博客，继续执行下面的命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server   // 启动本地服务器</div></pre></td></tr></table></figure></p>
+<p>然后打开浏览器，在地址栏输入：localhost:4000，你就可以喉嗨尚的看到你的博客了～～～</p>
+<blockquote>
+<p>按下快捷键：<code>CTRL + D</code> 可以退出本地服务器</p>
+</blockquote>
+<h2 id="托管博客到-Github"><a href="#托管博客到-Github" class="headerlink" title="托管博客到 Github"></a>托管博客到 Github</h2><p>尽管在本来浏览器中可已访问自己的博客了，但这仅仅只是一个单机版。如果要在整个互联网上发布直接的博客，需要有服务器托管，下面介绍如果托管直接的 Hexo 博客到 Github 上。登录 Github，创建已仓库(repositories), 名字为：<code>USERNAME</code>.github.io，如图：</p>
+<p><img src="/img/github_create.png" alt="github_create"></p>
+<p>仓库创建好之后，可以查看；如上图 <code>Your repositories</code> 对应的列表中点击 <em>rakkang.github.io</em> 可以打开仓库主页。要上传项目到仓库，还要在 Github 的 <code>Settings</code> 中添加自己的 SSH Key。</p>
+<p><img src="/img/github_sshkey.png" alt="github_sshkey"></p>
+<p>Github 仓库建好，设置项配置好之后，打开终端，进入博客目录：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ~/MyB<span class="built_in">log</span></div></pre></td></tr></table></figure></p>
+<p>生成博客的静态网页，并部署到 Github:<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate // 生成静态网页</div></pre></td></tr></table></figure></p>
+<p>在部署之前，还要配置下 Hexo 的服务器地址，打开 <code>~/MyBlog/_config.yml</code> 在文件的最后面，找到并编辑以下的内容：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Deployment</span></div><div class="line"><span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></div><div class="line"><span class="attr">deploy:</span></div><div class="line"><span class="attr">  type:</span> github    ------&gt; 直接填写 github</div><div class="line"><span class="attr">  repository:</span> https://github.com/rakkang/rakkang.github.io.git   -----&gt; Github 的仓库地址</div><div class="line"><span class="attr">  brach:</span> master</div></pre></td></tr></table></figure></p>
+<p>保存，在终端运行以下部署命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>Hexo 提供了简化的命令：</p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo g = hexo generate  // 生成</div><div class="line">hexo d = hexo deploy    // 部署</div><div class="line">hexo s = hexo server    // 运行服务器</div></pre></td></tr></table></figure>
+<p>运行部署命令，成功后会出现以下的信息：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">To https://github.com/rakkang/rakkang.github.io.git</div><div class="line">   a796df0..4d4cb79  master -&gt; master</div><div class="line">Branch master <span class="built_in">set</span> up to track remote branch master from https://github.com/rakkang/rakkang.github.io.git.</div><div class="line">[info] Deploy <span class="keyword">done</span>: github</div></pre></td></tr></table></figure></p>
+<p>部署后，在浏览器地址输入：<code>USERNAME</code>.github.io <em>(eg: <a href="http://rakkang.github.io" target="_blank" rel="external">rakkang.github.io</a>)</em> 就可以打开线上的博客了，至此部署完成。</p>
+<h2 id="写博客、发布文章"><a href="#写博客、发布文章" class="headerlink" title="写博客、发布文章"></a>写博客、发布文章</h2><p>新建一篇博客，执行下面的命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new post <span class="string">"article title"</span></div></pre></td></tr></table></figure></p>
+<p>这条命令会在你的博客目录的 source/_posts 下生成一个 article-title.md 的文件，用编辑器打开就可以编辑文章了。文章编辑好之后，运行生成、部署命令：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ hexo g   // 生成</div><div class="line">$ hexo d   // 部署</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Github 为了更好的程序员介绍自己的项目，提供了 Pages 功能，Pages 功能就是为每个项目提供一种静态网页的描述方式，很多网友就利用 Pages 功能搭建了自己的个人博客，这篇文章就是介绍如何使用 Hexo 快速的在 Github 上搭建自己的个人博客。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Github 的 Pages 功能是免费的，省去了直接搭建博客的服务器成本；但是也有一定的限制，免费用户空间上线是 300M, 只能建立静态的个人博客，如果要建立动态网站还是用 WordPress 比较靠谱&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="Hexo" scheme="http://ruikye.com/categories/Hexo/"/>
+    
+    
+      <category term="Hexo" scheme="http://ruikye.com/tags/Hexo/"/>
+    
+  </entry>
+  
+</feed>

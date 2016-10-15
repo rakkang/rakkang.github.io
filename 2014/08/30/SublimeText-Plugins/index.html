@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Ruikye"><meta name="description" content="SublimeText是一个代码编辑器（SublimeText2是收费软件，但可以无限期试用），也是HTML和散文先进的文本编辑器。SublimeText是由程序员JonSkinner于2008年1月份所开发出来，它最初被设计为一个具有丰富扩展功能的Vim。—百度"><meta name="keywords" content="Sublime Text"><title>Sublime Text 推荐插件 · Ruikye</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="http://ruikye.com/2014/08/30/SublimeText-Plugins/"><link rel="alternate" href="/atom.xml" title="Ruikye"><link rel="stylesheet" href="/fonts/iconfont/iconfont.css"><link rel="stylesheet" href="/css/style.css"></head><body><div id="main"><header><a href="/." class="logo">Ruikye</a><ul class="nav"><li class="nav-link"><a href="/" target="_self">Home</a></li><li class="nav-link"><a href="/archives/" target="_self">Catalog</a></li><li class="nav-link"><a href="/about/" target="_self">About</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">Sublime Text 推荐插件</h1><span class="post-time">2014年8月30日</span><div id="sidebar" class="post-sidebar"><h3 class="heading">目录</h3><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Package-Control"><span class="toc-text">Package Control</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SideBarEnhancements"><span class="toc-text">SideBarEnhancements</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ConvertToUTF8"><span class="toc-text">ConvertToUTF8</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#JsFormat"><span class="toc-text">JsFormat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Markdown-Preview"><span class="toc-text">Markdown Preview</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MarkdownEditing"><span class="toc-text">MarkdownEditing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spacegray"><span class="toc-text">Spacegray</span></a></li></ol></div><div class="post-content"><blockquote>
+<p>Sublime Text 是一个代码编辑器（Sublime Text 2是收费软件，但可以无限期试用），也是HTML和散文先进的文本编辑器。Sublime Text是由程序员Jon Skinner于2008年1月份所开发出来，它最初被设计为一个具有丰富扩展功能的Vim。— 百度百科</p>
+</blockquote>
+<h4 id="Package-Control"><a href="#Package-Control" class="headerlink" title="Package Control"></a><a href="https://github.com/wbond/sublime_package_control" target="_blank" rel="external">Package Control</a></h4><p>Package Control 是 Sublime Text 管理其他插件的工具，可以实现在线安装、删除插件等功能。</p>
+<a id="more"></a>
+<p>安装方法，打开 Sublime Text，按快捷键 <code>CTRL+反引号</code> 调出控制台(<em>Console</em>), 输入以下代码 ：</p>
+<pre><code>Sublime Text 2 安装代码：
+</code></pre><blockquote>
+<p>import urllib2,os; pf=’Package Control.sublime-package’; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler( ))); open( os.path.join( ipp, pf), ‘wb’ ).write( urllib2.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ +pf.replace( ‘ ‘,’%20’ )).read()); print( ‘Please restart Sublime Text to finish installation’)</p>
+</blockquote>
+<pre><code>Sublime Text 3 安装代码：
+</code></pre><blockquote>
+<p>import urllib.request,os; pf = ‘Package Control.sublime-package’; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), ‘wb’).write(urllib.request.urlopen( ‘<a href="http://sublime.wbond.net/" target="_blank" rel="external">http://sublime.wbond.net/</a>‘ + pf.replace(‘ ‘,’%20’)).read())</p>
+</blockquote>
+<pre><code>手动安装
+</code></pre><blockquote>
+<p>可能由于各种原因，无法使用代码安装，那可以通过以下步骤手动安装Package Control：</p>
+<ol>
+<li>点击Preferences &gt; Browse Packages菜单<ol>
+<li>进入打开的目录的上层目录，然后再进入Installed Packages/目录</li>
+<li>下载Package Control.sublime-package并复制到Installed Packages/目录</li>
+<li>重启Sublime Text。</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p> 安装完成后，可以使用<code>CTRL(CMD)+SHIFT+P</code>快捷键打开控制面板，输入: <em>package control</em> 。</p>
+<h4 id="SideBarEnhancements"><a href="#SideBarEnhancements" class="headerlink" title="SideBarEnhancements"></a><a href="https://github.com/titoBouzout/SideBarEnhancements" target="_blank" rel="external">SideBarEnhancements</a></h4><p>直接使用 Package Control 安装，SideBarEnhancements是 Sublime Text中强大的 Sidebar 插件，Sublime Text 本身的 Sidebar 提供的右键菜单非常简陋，有 SideBarEnhancements 之后，可以实现很多使用的功能，比如：在文件浏览器中打开文件等。</p>
+<h4 id="ConvertToUTF8"><a href="#ConvertToUTF8" class="headerlink" title="ConvertToUTF8"></a><a href="https://github.com/seanliang/ConvertToUTF8" target="_blank" rel="external">ConvertToUTF8</a></h4><p>直接使用 Package Control 安装。Sublime Text 本对中文支持不太好，如果直接打开 GBK 编码格式的文件会出现乱码的情况，ConvertToUTF8 可以将 GBK 等其他的编码文件转换为 UTF8 显示，解决中文乱码问题。</p>
+<blockquote>
+<p>通过本插件，您可以编辑并保存目前编码不被 Sublime Text 支持的文件，特别是中日韩用户使用的 GB2312，GBK，BIG5，EUC-KR，EUC-JP 等。ConvertToUTF8 同时支持 Sublime Text 2 和 3。 —– ConvertToUTF8 官方介绍</p>
+</blockquote>
+<h4 id="JsFormat"><a href="#JsFormat" class="headerlink" title="JsFormat"></a><a href="https://github.com/jdc0589/JsFormat" target="_blank" rel="external">JsFormat</a></h4><p>直接使用 Package Control 安装。JsFormat 顾名思义，是一个可以格式化 JavaScript 代码的插件（也可以格式化Json），格式化是文件名必须保存问 *.js 或 *.json, 这样插件才能识别出代码。</p>
+<h4 id="Markdown-Preview"><a href="#Markdown-Preview" class="headerlink" title="Markdown Preview"></a><a href="https://github.com/revolunet/sublimetext-markdown-preview" target="_blank" rel="external">Markdown Preview</a></h4><p>直接使用 Package Control 安装。Markdown Preview 是一个支持 Markdown 标记语言的插件，Sublime Text 本身是支持 Markdown 的，但是显示不太美观。同时， Markdown Preview 还支持导出 HTML 或者在浏览器中打开预览。</p>
+<p>使用方法：</p>
+<blockquote>
+<p>打开控制面板（<code>CTRL+SHIFT+P</code>），输入: <em>markdown preview</em> 就可看到相关的命令了。</p>
+</blockquote>
+<h4 id="MarkdownEditing"><a href="#MarkdownEditing" class="headerlink" title="MarkdownEditing"></a><a href="https://github.com/SublimeText-Markdown/MarkdownEditing" target="_blank" rel="external">MarkdownEditing</a></h4><p>直接使用 Package Control 安装。MardownEditing 是一款功能更加强大的 Markdown 插件。最大的特色是支持 <a href="https://help.github.com/articles/github-flavored-markdown" target="_blank" rel="external">GFM</a> ( GitHub flavored Markdown) 代码高亮。</p>
+<blockquote>
+<p>Markdown plugin for Sublime Text. Provides a decent Markdown color scheme (light and dark) with more robust syntax highlighting and useful Markdown editing features for Sublime Text. 3 flavors are supported: Standard Markdown, GitHub flavored Markdown, MultiMarkdown. </p>
+</blockquote>
+<h4 id="Spacegray"><a href="#Spacegray" class="headerlink" title="Spacegray"></a><a href="https://github.com/kkga/spacegray" target="_blank" rel="external">Spacegray</a></h4><p>直接使用 Package Control 安装。Spacegray 是一款高大上的 Sublime Text 主题。有 Ocean Dark、 Ocean Light 和 Eighties Dark 三中主题。</p>
+<p>其他的插件还有：<a href="https://github.com/SublimeText/Tag" target="_blank" rel="external">Tag</a>, <a href="https://github.com/condemil/Gist" target="_blank" rel="external">Gist</a>, <a href="https://github.com/wbond/sublime_alignment" target="_blank" rel="external">Alignment</a>, <a href="https://github.com/alienhard/SublimeAllAutocomplete" target="_blank" rel="external">All AutoComplete</a> 等等…</p>
+</div></article><div class="tags"><a href="/tags/Sublime-Text/">Sublime Text</a></div><div class="paginator"><a href="/2014/08/30/github-gist/" class="prev"><i class="iconfont icon-left"></i><span> 上一页</span></a><a href="/2014/08/30/Hexo-搭建个人博客-·-进阶篇/" class="next"><span>下一页</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div id="disqus_thread"></div></section><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'http://ruikye.com/2014/08/30/SublimeText-Plugins/';
+    this.page.identifier = '2014/08/30/SublimeText-Plugins/';
+    this.page.title = 'Sublime Text 推荐插件';
+};
+(function() {
+var d = document, s = d.createElement('script');
+
+s.src = '//ruikye.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script></section><footer><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2016<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Ruikye</span></p></div><label id="back2top"><i class="iconfont icon-up"></i></label></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
