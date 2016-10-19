@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ruikye.com/"/>
-  <updated>2016-10-15T14:57:17.000Z</updated>
+  <updated>2016-10-19T15:52:55.000Z</updated>
   <id>http://ruikye.com/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Github ssh-key 与 deploy key</title>
+    <link href="http://ruikye.com/2016/10/19/github-ssh-keys/"/>
+    <id>http://ruikye.com/2016/10/19/github-ssh-keys/</id>
+    <published>2016-10-19T14:53:07.000Z</published>
+    <updated>2016-10-19T15:52:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="ssh-key"><a href="#ssh-key" class="headerlink" title="ssh-key"></a>ssh-key</h2><p>ssh-key 是用于用于认证 Github 账户的密钥，从 Github 通过 Git 下载开源项目时要求账户添加了 ssh-key。如果 <code>git clone</code> 时账户没有添加 ssh-key 则会在命令行出现下面的错误提示:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/npsabari/testrepo.git</div><div class="line">Cloning into &apos;testRepo&apos;...</div><div class="line">Permission denied (publickey).</div><div class="line">fatal: The remote end hung up unexpectedly</div></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="生成-ssh-key（For-Mac）"><a href="#生成-ssh-key（For-Mac）" class="headerlink" title="生成 ssh-key（For Mac）"></a>生成 ssh-key（For Mac）</h3><p>  打开 <code>终端</code>，使用 <code>ssh-keygen</code> 命令生成 ssh-key</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen</div><div class="line">Generating public/private rsa key pair.</div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line">Enter same passphrase again:</div><div class="line">Your identification has been saved in /Users/kang/.ssh/test.</div><div class="line">Your public key has been saved in /Users/kang/.ssh/test.pub.</div><div class="line">The key fingerprint is:</div><div class="line">SHA256:Z//9gcDS40LheYjxpZOuDgbG5wRQ9X7O7BTXfo134es kang@ruikye</div><div class="line">The key&apos;s randomart image is:</div><div class="line">+---[RSA 2048]----+</div><div class="line">| .....           |</div><div class="line">|  .   .          |</div><div class="line">|   .   o . .     |</div><div class="line">|  . . . = X .    |</div><div class="line">|   + o oS&amp;oB . . |</div><div class="line">|  . =   BoB.+ o.o|</div><div class="line">|     +   B ..o.++|</div><div class="line">|    . . + .  ..o+|</div><div class="line">|      .o .    oE+|</div><div class="line">+----[SHA256]-----+</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="添加-ssh-key"><a href="#添加-ssh-key" class="headerlink" title="添加 ssh-key"></a>添加 ssh-key</h3><p>  默认生成的 ssh-key 公钥在 <code>~/.ssh/id_rsa.pub</code> 文件，复制公钥上传到 Github。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cat ~/.ssh/id_rsa.pub | pbcopy</div></pre></td></tr></table></figure>
+<p>  在 Github 的账户设置中，打开 <code>SSH and GPG keys</code> -&gt; <code>New SSH key</code> 添加复制的 <code>~/.ssh/id_rsa.pub</code> 公钥</p>
+</li>
+</ul>
+<h2 id="deploy-key"><a href="#deploy-key" class="headerlink" title="deploy key"></a>deploy key</h2><p>deploy key 每个 Repository 都有一个，主要用于 push 代码时使用。每个 Repo 的 deploy key 都是单独设置的，不能多个 Repo 使用相同的 deploy key。如果 Repository 没有添加 deploy key 时直接 push 代码，会出现权限错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git push origin master</div><div class="line">Permission denied (publickey).</div><div class="line">fatal: Could not write to remote repository.</div><div class="line"></div><div class="line">Please make sure you have the correct access rights</div><div class="line">and the repository exists.</div></pre></td></tr></table></figure></p>
+<ul>
+<li><h3 id="生成-deploy-key（For-Mac）"><a href="#生成-deploy-key（For-Mac）" class="headerlink" title="生成 deploy key（For Mac）"></a>生成 deploy key（For Mac）</h3><p>  deploy key 和 ssh key 本质是一样的，都可以用 <code>ssh-keygen</code> 命令生成。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -f ~/.ssh/deploy_key_repo1</div><div class="line">Generating public/private rsa key pair.</div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line">Enter same passphrase again:</div><div class="line">Your identification has been saved in /Users/kang/.ssh/test.</div><div class="line">Your public key has been saved in /Users/kang/.ssh/test.pub.</div><div class="line">The key fingerprint is:</div><div class="line">SHA256:Z//9gcDS40LheYjxpZOuDgbG5wRQ9X7O7BTXfo134es kang@ruikye</div><div class="line">The key&apos;s randomart image is:</div><div class="line">+---[RSA 2048]----+</div><div class="line">| .....           |</div><div class="line">|  .   .          |</div><div class="line">|   .   o . .     |</div><div class="line">|  . . . = X .    |</div><div class="line">|   + o oS&amp;oB . . |</div><div class="line">|  . =   BoB.+ o.o|</div><div class="line">|     +   B ..o.++|</div><div class="line">|    . . + .  ..o+|</div><div class="line">|      .o .    oE+|</div><div class="line">+----[SHA256]-----+</div></pre></td></tr></table></figure>
+<p>  <strong><em>注意点：</em></strong> 因为在生成 ssh-key 使用了默认 id_rsa.pub 文件存储，所以 deploy key 要放在其他的文件中。由于 deploy key 不是放在默认文件了，所有生成的 deploy key 不能直接使用，需要添加到 ssl 的认证列表中：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># 添加默认的 id_rsa</div><div class="line">$ ssh-add ~/.ssh/id_rsa</div><div class="line"></div><div class="line"># 添加 deploy key</div><div class="line">$ ssh-add ~/.ssh/deploy_key_repo1</div><div class="line"></div><div class="line"># 查看所有 add 的 keys</div><div class="line">$ ssh-add -l</div><div class="line">2048 SHA256:kqQTYy......dsp+8 /Users/your/.ssh/id_rsa (RSA)</div><div class="line">2048 SHA256:0b/vdS......62tok /Users/your/.ssh/deploy_key_repo1 (RSA)</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="添加-deploy-key"><a href="#添加-deploy-key" class="headerlink" title="添加 deploy key"></a>添加 deploy key</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 复制 deploy key</div><div class="line">$ cat ~/.ssh/deploy_key_repo1.pub | pbcopy</div></pre></td></tr></table></figure>
+<p>  打开 Repository 的设置页，在 <code>Deploy keys</code> -&gt; <code>Add deploy key</code> 添加公钥并勾选 <code>Allow write access</code>。</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;ssh-key&quot;&gt;&lt;a href=&quot;#ssh-key&quot; class=&quot;headerlink&quot; title=&quot;ssh-key&quot;&gt;&lt;/a&gt;ssh-key&lt;/h2&gt;&lt;p&gt;ssh-key 是用于用于认证 Github 账户的密钥，从 Github 通过 Git 下载开源项
+    
+    </summary>
+    
+    
+      <category term="Github" scheme="http://ruikye.com/tags/Github/"/>
+    
+  </entry>
   
   <entry>
     <title>Github Pages 域名绑定</title>
